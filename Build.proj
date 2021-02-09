@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Target Name="Build" >
+    <CreateProperty Value="Debug" Condition="$(Configuration)==''">
+      <Output TaskParameter="Value" PropertyName="Configuration" />
+    </CreateProperty>
+
+    <MSBuild Projects="SQLUpdater\SQLUpdater.csproj" ContinueOnError="false" Properties="Configuration=$(Configuration)" />
+  </Target>
+
+  <Target Name="Install" DependsOnTargets="Build">
+    <ItemGroup>
+      <BinaryFiles Include="SQLUpdater\bin\$(Configuration)\*.dll" />
+      <BinaryFiles Include="SQLUpdater\bin\$(Configuration)\*.exe" Exclude="SQLUpdater\bin\$(Configuration)\*.vshost.exe" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(BinaryFiles)" DestinationFolder="$(Destination)" />
+  </Target>
+
+</Project>

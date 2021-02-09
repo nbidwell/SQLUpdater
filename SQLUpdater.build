@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<project name="SQLUpdater build script" default="help">
+	<property name="coverageTestAssemblies" value="SqlUpdater.Lib" />
+  <property name="installDirectory" value="C:\Program Files\SQLUpdater" />
+  <property name="msbuild.exe" value="C:\WINDOWS\Microsoft.NET\Framework\v3.5\msbuild.exe" />
+	<property name="ncover.console.exe" value="C:\Program Files\NCover\ncover.console.exe" />
+	<property name="nunit-console.exe" value="C:\Program Files\NUnit\bin\nunit-console.exe" />
+	<property name="NCoverReader.exe" value="C:\Program Files\NCoverReader\NCoverReader.exe" />
+  <property name="project.config" value="release" />
+  
+  <target name="build" description="Build using the solution file.">
+    <echo>
+      At some point this will build the installer
+    </echo>
+    <exec program="${msbuild.exe}" commandline="SQLUpdater.sln /p:Configuration=${project.config}" />
+  </target>
+  
+  <target name="clean" description="Delete all previously compiled binaries.">
+      <delete>
+          <fileset>
+              <include name="**/bin/**" />
+              <include name="**/obj/**" />
+          </fileset>
+      </delete>
+  </target>
+	
+	<target name="coverageTest" depends="build" description="Run the coverage tests using the unit tests.">
+		<exec program="${ncover.console.exe}" commandline="//a ${coverageTestAssemblies} &quot;${nunit-console.exe}&quot; SqlUpdater.UnitTests\SqlUpdater.UnitTests.nunit /nologo" />
+		<exec program="${NCoverReader.exe}" commandline="-r 65 Coverage.Xml" />
+	</target>
+  
+  <target name="help" description="Help message for targets in this build file.">
+    <echo>
+      There really is no help here.
+    </echo>
+  </target>
+  
+  <target name="install" depends="build">
+    <echo>
+      At some point this will use the installer
+    </echo>
+    <delete dir="${installDirectory}" failonerror="false" />
+    <mkdir dir="${installDirectory}" />
+    <copy todir="${installDirectory}">
+      <fileset basedir="SQLUpdater\bin\${project.config}">
+        <include name="*.*" />
+      </fileset>
+    </copy>
+  </target>
+</project> 

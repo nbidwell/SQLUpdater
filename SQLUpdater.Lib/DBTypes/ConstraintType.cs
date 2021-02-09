@@ -1,0 +1,65 @@
+﻿/*
+ * Copyright 2009 Nathan Bidwell (nbidwell@bidwellfamily.net)
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License version 20 as published by
+ *  the Free Software Foundation.
+ * 
+ * This software is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+namespace SQLUpdater.Lib.DBTypes
+{
+	/// <summary>
+	/// Constraint types
+	/// </summary>
+	public enum ConstraintType
+	{
+		/// <summary>
+		/// Check constraint
+		/// </summary>
+		Check,
+
+		/// <summary>
+		/// Default constraint
+		/// </summary>
+		Default,
+
+		/// <summary>
+		/// Disable a constraint
+		/// </summary>
+		Disable,
+
+		/// <summary>
+		/// Enable a constraint
+		/// </summary>
+		Enable,
+
+		/// <summary>
+		/// Foreign Key
+		/// </summary>
+		ForeignKey,
+
+		/// <summary>
+		/// Primary Key
+		/// </summary>
+		PrimaryKey,
+
+		/// <summary>
+		/// Unique Key
+		/// </summary>
+		Unique,
+
+		/// <summary>
+		/// Default, no type yet
+		/// </summary>
+		Unknown
+	}
+}
