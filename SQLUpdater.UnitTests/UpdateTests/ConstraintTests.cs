@@ -43,7 +43,46 @@ namespace SQLUpdater.UnitTests.UpdateTests
             Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
         }
 
-		[Test]
+        [Test]
+        public void CheckFunctionTest()
+        {
+            ScriptParser startingDatabase = new ScriptParser();
+            startingDatabase.Parse("CREATE FUNCTION dbo.checker(@val varchar(10)) RETURNS int AS BEGIN RETURN 1 END");
+            startingDatabase.Parse("CREATE TABLE foo( a varchar(10) CHECK ( dbo.checker(a) = 1))");
+
+            ScriptParser currentDatabase = new ScriptParser();
+            ScriptSet scripts = startingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
+            scripts.Sort();
+
+            Assert.AreEqual(3, scripts.Count);
+            Assert.AreEqual(scripts[0].Type, ScriptType.Table);
+            Assert.AreEqual(scripts[1].Type, ScriptType.UserDefinedFunction);
+            Assert.AreEqual(scripts[2].Type, ScriptType.CheckConstraint);
+
+            ExecuteScripts(scripts);
+
+            ScriptParser endingDatabase = new ScriptParser();
+            endingDatabase.Parse("CREATE FUNCTION dbo.checker(@val varchar(10)) RETURNS int AS BEGIN RETURN 1 END");
+            endingDatabase.Parse("CREATE TABLE foo( a varchar(10) CHECK ( dbo.checker(a) = 1), b int)");
+
+            scripts = endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
+            scripts.Sort();
+
+            Assert.AreEqual(5, scripts.Count);
+            Assert.AreEqual(scripts[0].Type, ScriptType.DropConstraint);
+            Assert.AreEqual(scripts[1].Type, ScriptType.TableSaveData);
+            Assert.AreEqual(scripts[2].Type, ScriptType.Table);
+            Assert.AreEqual(scripts[3].Type, ScriptType.CheckConstraint);
+            Assert.AreEqual(scripts[4].Type, ScriptType.TableRestoreData);
+
+            ExecuteScripts(scripts);
+
+            currentDatabase = ParseDatabase();
+            ScriptSet difference = endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
+            Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+        }
+
+        [Test]
 		public void DefaultTest()
 		{
 			ScriptParser startingDatabase=new ScriptParser();

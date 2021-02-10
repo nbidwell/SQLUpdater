@@ -75,35 +75,68 @@ FOR [a]",
 			database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
 			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
-		}
+        }
 
-		[Test]
-		public void InlineDefaultTest()
-		{
-			ScriptParser parser=new ScriptParser();
-			parser.Parse("CREATE TABLE foo( a int default 0)");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
-			Assert.AreEqual(1, parser.Database.Constraints.Count);
+        [Test]
+        public void FunctionTest()
+        {
+            ScriptParser parser = new ScriptParser();
+            parser.Parse("CREATE FUNCTION dbo.checker(@val varchar(10)) RETURNS int AS BEGIN RETURN 1 END");
+            parser.Parse("CREATE TABLE foo( a varchar(10) CHECK ( dbo.checker(a) = 1))");
+            Assert.AreEqual(1, parser.Database.Tables.Count);
+            Assert.AreEqual(1, parser.Database.Constraints.Count);
+            Assert.AreEqual(1, parser.Database.Functions.Count);
 
-			ScriptParser database=ParseDatabase();
-			ScriptSet scripts=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(2, scripts.Count);
-			Assert.AreEqual(ScriptType.Table, scripts[0].Type);
+            ScriptParser database = ParseDatabase();
+            ScriptSet scripts = parser.Database.CreateDiffScripts(database.Database);
+            Assert.AreEqual(3, scripts.Count);
+            Assert.AreEqual(ScriptType.Table, scripts[0].Type);
 
-			Assert.AreEqual(ScriptType.DefaultConstraint, scripts[1].Type);
-			Assert.AreEqual(@"ALTER TABLE [dbo].[foo]
+            Assert.AreEqual(ScriptType.CheckConstraint, scripts[1].Type);
+            Assert.AreEqual(@"ALTER TABLE [dbo].[foo]
+ADD CONSTRAINT [CK_foo]
+CHECK ( [dbo].[checker] ( [a] ) = 1 )",
+                scripts[1].Text);
+
+            Assert.AreEqual(ScriptType.UserDefinedFunction, scripts[2].Type);
+            Assert.AreEqual(@"CREATE FUNCTION dbo.checker(@val varchar(10)) RETURNS int AS BEGIN RETURN 1 END
+GO",
+                scripts[2].Text);
+
+            ExecuteScripts(scripts);
+
+            database = ParseDatabase();
+            ScriptSet difference = parser.Database.CreateDiffScripts(database.Database);
+            Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+        }
+
+        [Test]
+        public void InlineDefaultTest()
+        {
+            ScriptParser parser = new ScriptParser();
+            parser.Parse("CREATE TABLE foo( a int default 0)");
+            Assert.AreEqual(1, parser.Database.Tables.Count);
+            Assert.AreEqual(1, parser.Database.Constraints.Count);
+
+            ScriptParser database = ParseDatabase();
+            ScriptSet scripts = parser.Database.CreateDiffScripts(database.Database);
+            Assert.AreEqual(2, scripts.Count);
+            Assert.AreEqual(ScriptType.Table, scripts[0].Type);
+
+            Assert.AreEqual(ScriptType.DefaultConstraint, scripts[1].Type);
+            Assert.AreEqual(@"ALTER TABLE [dbo].[foo]
 ADD CONSTRAINT [DF_foo_a]
 DEFAULT ( 0 )
 FOR [a]",
-				scripts[1].Text);
-			ExecuteScripts(scripts);
+                scripts[1].Text);
+            ExecuteScripts(scripts);
 
-			database=ParseDatabase();
-			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
-		}
+            database = ParseDatabase();
+            ScriptSet difference = parser.Database.CreateDiffScripts(database.Database);
+            Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+        }
 
-		[Test]
+        [Test]
 		public void InlineForeignKeyTest()
 		{
 			ScriptParser parser=new ScriptParser();

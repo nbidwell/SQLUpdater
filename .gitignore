@@ -7,3 +7,5 @@
 /SQLUpdater.Lib/obj
 /SQLUpdater.UnitTests/bin
 /SQLUpdater.UnitTests/obj
+/SQLUpdater.UnitTests/SQLUpdater.UnitTests.VisualState.xml
+/SQLUpdater.UnitTests/TestResult.xml

@@ -509,7 +509,7 @@ namespace SQLUpdater.Lib.DBTypes
 
         private string ParseCheckConstraint(Token token)
         {
-            token.Children.CleanGrouping();
+            token.Children.CleanGrouping(token);
 
             //something like (a in (b, c, c)) needs to be changed to (a=b OR a=c OR a=d)
             //SQL Server does that to us under the hood and screws up our differences if we don't

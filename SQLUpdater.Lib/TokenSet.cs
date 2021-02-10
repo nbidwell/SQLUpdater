@@ -107,15 +107,15 @@ namespace SQLUpdater.Lib
         /// <summary>
         /// Removes any redundant grouping constructs
         /// </summary>
-        public void CleanGrouping()
+        public void CleanGrouping(Token parent)
         {
             foreach (Token token in tokens)
             {
                 //Make sure all of this token's children are clean
-                token.Children.CleanGrouping();
+                token.Children.CleanGrouping(token);
 
                 //Find redundant nesting and eliminate it
-                if (token.Value == "(" && token.Children.Count == 2)
+                if (token.Value == "(" && token.Children.Count == 2 && parent.Type != TokenType.Identifier)
                 {
                     Token target = token.Children.First;
                     token.Children.Clear();

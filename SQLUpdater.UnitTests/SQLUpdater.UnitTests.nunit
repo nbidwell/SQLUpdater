@@ -1,5 +1,5 @@
 ﻿<NUnitProject>
-  <Settings activeconfig="Debug" />
+  <Settings activeconfig="Debug" processModel="Separate" domainUsage="Default" />
   <Config name="Debug" binpathtype="Auto">
     <assembly path="bin\Debug\SQLUpdater.UnitTests.dll" />
   </Config>

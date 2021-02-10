@@ -103,7 +103,14 @@ namespace SQLUpdater.Lib
             string val = Value;
             if (escapeValues && this.Type == TokenType.Identifier)
             {
-                val = new DBTypes.SmallName(val).ToString();
+                if (Children.Count == 0)
+                {
+                    val = new DBTypes.SmallName(val).ToString();
+                }
+                else
+                {
+                    val = ((DBTypes.Name)val).ToString();
+                }
             }
 
 			StringBuilder retVal=new StringBuilder();
