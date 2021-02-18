@@ -46,11 +46,6 @@ namespace SQLUpdater.Lib
 		DropTriggerOrder,
 
 		/// <summary>
-		/// Drop a user defined function
-		/// </summary>
-		DropUserDefinedFunction,
-
-		/// <summary>
 		/// Drop a foreign key
 		/// </summary>
 		DropForeignKey,
@@ -74,6 +69,11 @@ namespace SQLUpdater.Lib
 		/// Drop a constraint
 		/// </summary>
 		DropConstraint,
+
+		/// <summary>
+		/// Drop a user defined function
+		/// </summary>
+		DropUserDefinedFunction,
 
 		/// <summary>
 		/// Disable a constraint

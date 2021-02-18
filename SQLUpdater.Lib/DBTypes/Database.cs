@@ -298,6 +298,14 @@ namespace SQLUpdater.Lib.DBTypes
 						dependencies.Add(referenced, function);
 					}
 				}
+
+                foreach (Constraint constraint in Constraints)
+                {
+                    if (constraint.Type == ConstraintType.Check && constraint.Check.Contains(function.Name.Object.Unescaped))
+                    {
+                        dependencies.Add(function, constraint);
+                    }
+                }
 			}
 
 			foreach(FulltextIndex index in FulltextIndexes)

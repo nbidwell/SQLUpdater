@@ -61,11 +61,11 @@ namespace SQLUpdater.UnitTests.UpdateTests
 
             ExecuteScripts(scripts);
 
-            ScriptParser endingDatabase = new ScriptParser();
-            endingDatabase.Parse("CREATE FUNCTION dbo.checker(@val varchar(10)) RETURNS int AS BEGIN RETURN 1 END");
-            endingDatabase.Parse("CREATE TABLE foo( a varchar(10) CHECK ( dbo.checker(a) = 1), b int)");
+            ScriptParser middleDatabase = new ScriptParser();
+            middleDatabase.Parse("CREATE FUNCTION dbo.checker(@val varchar(10)) RETURNS int AS BEGIN RETURN 1 END");
+            middleDatabase.Parse("CREATE TABLE foo( a varchar(10) CHECK ( dbo.checker(a) = 1), b int)");
 
-            scripts = endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
+            scripts = middleDatabase.Database.CreateDiffScripts(startingDatabase.Database);
             scripts.Sort();
 
             Assert.AreEqual(5, scripts.Count);
@@ -78,7 +78,26 @@ namespace SQLUpdater.UnitTests.UpdateTests
             ExecuteScripts(scripts);
 
             currentDatabase = ParseDatabase();
-            ScriptSet difference = endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
+            ScriptSet difference = middleDatabase.Database.CreateDiffScripts(currentDatabase.Database);
+            Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+
+            ScriptParser endingDatabase = new ScriptParser();
+            endingDatabase.Parse("CREATE FUNCTION dbo.checker(@val varchar(10)) RETURNS int AS BEGIN RETURN 2 END");
+            endingDatabase.Parse("CREATE TABLE foo( a varchar(10) CHECK ( dbo.checker(a) = 1), b int)");
+
+            scripts = endingDatabase.Database.CreateDiffScripts(middleDatabase.Database);
+            scripts.Sort();
+
+            Assert.AreEqual(4, scripts.Count);
+            Assert.AreEqual(scripts[0].Type, ScriptType.DropConstraint);
+            Assert.AreEqual(scripts[1].Type, ScriptType.DropUserDefinedFunction);
+            Assert.AreEqual(scripts[2].Type, ScriptType.UserDefinedFunction);
+            Assert.AreEqual(scripts[3].Type, ScriptType.CheckConstraint);
+
+            ExecuteScripts(scripts);
+
+            currentDatabase = ParseDatabase();
+            difference = endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
             Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
         }
 
