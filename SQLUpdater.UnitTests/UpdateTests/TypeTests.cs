@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SQLUpdater.Lib;
 using SQLUpdater.Lib.DBTypes;
 using System;
@@ -25,19 +26,19 @@ namespace SQLUpdater.UnitTests.UpdateTests
 
             ScriptSet scripts = endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
             scripts.Sort();
-            Assert.AreEqual(2, scripts.Count);
+            ClassicAssert.AreEqual(2, scripts.Count);
 
-            Assert.AreEqual(scripts[0].Type, ScriptType.DropTableType);
-            Assert.AreEqual("DROP TYPE [dbo].[foo]", scripts[0].Text);
+            ClassicAssert.AreEqual(scripts[0].Type, ScriptType.DropTableType);
+            ClassicAssert.AreEqual("DROP TYPE [dbo].[foo]", scripts[0].Text);
 
-            Assert.AreEqual(scripts[1].Type, ScriptType.TableType);
+            ClassicAssert.AreEqual(scripts[1].Type, ScriptType.TableType);
             //the actual script should be tested in the parser tests
 
             ExecuteScripts(scripts);
 
             currentDatabase = ParseDatabase();
             ScriptSet difference = endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-            Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+            ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
         }
     }
 }

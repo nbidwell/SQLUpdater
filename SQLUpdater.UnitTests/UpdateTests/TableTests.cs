@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SQLUpdater.Lib;
 using SQLUpdater.Lib.DBTypes;
 using System;
@@ -24,16 +25,16 @@ namespace SQLUpdater.UnitTests.UpdateTests
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(3, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-			Assert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
 			//the actual script should be tested in the parser tests
 
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
-			Assert.AreEqual(@"INSERT INTO [dbo].[foo] (
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(@"INSERT INTO [dbo].[foo] (
 	[a]
 )
 SELECT
@@ -49,7 +50,7 @@ GO
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
         [Test]
@@ -67,22 +68,22 @@ GO
 
             ScriptSet scripts = endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
             scripts.Sort();
-            Assert.AreEqual(4, scripts.Count);
+            ClassicAssert.AreEqual(4, scripts.Count);
 
-            Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-            Assert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
+            ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+            ClassicAssert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
 
-            Assert.AreEqual(scripts[1].Type, ScriptType.Table);
+            ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
             //the actual script should be tested in the parser tests
 
-            Assert.AreEqual(scripts[2].Type, ScriptType.DefaultConstraint);
-            Assert.AreEqual(@"ALTER TABLE [dbo].[foo]
+            ClassicAssert.AreEqual(scripts[2].Type, ScriptType.DefaultConstraint);
+            ClassicAssert.AreEqual(@"ALTER TABLE [dbo].[foo]
 ADD CONSTRAINT [DF_foo_b]
 DEFAULT ( 0 )
 FOR [b]", scripts[2].Text);
 
-            Assert.AreEqual(scripts[3].Type, ScriptType.TableRestoreData);
-            Assert.AreEqual(@"INSERT INTO [dbo].[foo] (
+            ClassicAssert.AreEqual(scripts[3].Type, ScriptType.TableRestoreData);
+            ClassicAssert.AreEqual(@"INSERT INTO [dbo].[foo] (
 	[a],
 	[b]
 )
@@ -101,7 +102,7 @@ GO
 
             currentDatabase = ParseDatabase();
             ScriptSet difference = endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-            Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+            ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
         }
 
 		[Test]
@@ -118,16 +119,16 @@ GO
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(3, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-			Assert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
 			//the actual script should be tested in the parser tests
 
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
-			Assert.AreEqual(@"INSERT INTO [dbo].[foo] (
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(@"INSERT INTO [dbo].[foo] (
 	[a],
 	[b]
 )
@@ -145,7 +146,7 @@ GO
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -162,16 +163,16 @@ GO
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(3, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-			Assert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
 			//the actual script should be tested in the parser tests
 
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
-			Assert.AreEqual(@"INSERT INTO [dbo].[foo] (
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(@"INSERT INTO [dbo].[foo] (
 	[a]
 )
 SELECT
@@ -187,7 +188,7 @@ GO
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -204,16 +205,16 @@ GO
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(3, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-			Assert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
 			//the actual script should be tested in the parser tests
 
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
-			Assert.AreEqual(@"INSERT INTO [dbo].[foo] (
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(@"INSERT INTO [dbo].[foo] (
 	[b]
 )
 SELECT
@@ -229,7 +230,7 @@ GO
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -246,16 +247,16 @@ GO
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(3, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-			Assert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
 			//the actual script should be tested in the parser tests
 
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
-			Assert.AreEqual(@"INSERT INTO [dbo].[foo] (
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(@"INSERT INTO [dbo].[foo] (
 	[a]
 )
 SELECT
@@ -271,7 +272,7 @@ GO
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -288,16 +289,16 @@ GO
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(3, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-			Assert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
 			//the actual script should be tested in the parser tests
 
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
-			Assert.AreEqual(@"INSERT INTO [dbo].[foo] (
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(@"INSERT INTO [dbo].[foo] (
 	[a]
 )
 SELECT
@@ -313,7 +314,7 @@ GO
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -330,16 +331,16 @@ GO
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(3, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-			Assert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
 			//the actual script should be tested in the parser tests
 
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
-			Assert.AreEqual(@"INSERT INTO [dbo].[foo] (
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(@"INSERT INTO [dbo].[foo] (
 	[a]
 )
 SELECT
@@ -355,7 +356,7 @@ GO
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -368,7 +369,7 @@ GO
 			endingDatabase.Parse("CREATE TABLE foo( a varchar(5) collate SQL_Latin1_General_CP1_CI_AS)");
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
-			Assert.AreEqual(0, scripts.Count);
+			ClassicAssert.AreEqual(0, scripts.Count);
 		}
 
 		[Test]
@@ -381,7 +382,7 @@ GO
 			endingDatabase.Parse("CREATE TABLE foo( a int) ON Primary");
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
-			Assert.AreEqual(0, scripts.Count);
+			ClassicAssert.AreEqual(0, scripts.Count);
 		}
 
 		[Test]
@@ -398,16 +399,16 @@ GO
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(3, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-			Assert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
 			//the actual script should be tested in the parser tests
 
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
-			Assert.AreEqual(@"INSERT INTO [dbo].[foo] (
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(@"INSERT INTO [dbo].[foo] (
 	[a]
 )
 SELECT
@@ -423,7 +424,7 @@ GO
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -441,14 +442,14 @@ GO
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(4, scripts.Count);
+			ClassicAssert.AreEqual(4, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
 
-			Assert.AreEqual(scripts[3].Type, ScriptType.Permission);
-			Assert.AreEqual(@"GRANT SELECT ON [dbo].[foo] TO [public]
+			ClassicAssert.AreEqual(scripts[3].Type, ScriptType.Permission);
+			ClassicAssert.AreEqual(@"GRANT SELECT ON [dbo].[foo] TO [public]
 
 GO
 
@@ -459,7 +460,7 @@ GO
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -476,16 +477,16 @@ GO
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(3, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-			Assert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
 			//the actual script should be tested in the parser tests
 
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
-			Assert.AreEqual(@"SET IDENTITY_INSERT [dbo].[foo] ON
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(@"SET IDENTITY_INSERT [dbo].[foo] ON
 GO
 
 INSERT INTO [dbo].[foo] (
@@ -507,7 +508,7 @@ GO
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -524,16 +525,16 @@ GO
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(3, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-			Assert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
 			//the actual script should be tested in the parser tests
 
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
-			Assert.AreEqual(@"SET IDENTITY_INSERT [dbo].[foo] ON
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(@"SET IDENTITY_INSERT [dbo].[foo] ON
 GO
 
 INSERT INTO [dbo].[foo] (
@@ -555,7 +556,7 @@ GO
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -572,16 +573,16 @@ GO
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(3, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-			Assert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
 			//the actual script should be tested in the parser tests
 
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
-			Assert.AreEqual(@"SET IDENTITY_INSERT [dbo].[foo] ON
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(@"SET IDENTITY_INSERT [dbo].[foo] ON
 GO
 
 INSERT INTO [dbo].[foo] (
@@ -603,7 +604,7 @@ GO
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -617,12 +618,12 @@ GO
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
-			Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
 
-			Assert.AreEqual(@"INSERT INTO [dbo].[a] (
+			ClassicAssert.AreEqual(@"INSERT INTO [dbo].[a] (
 	[b],
 	[c]
 )
@@ -653,14 +654,14 @@ GO
             endingDatabase.Parse("GRANT SELECT ON foo TO PUBLIC");
 
             ScriptSet scripts = endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
-            Assert.AreEqual(1, scripts.Count);
-            Assert.AreEqual(scripts[0].Type, ScriptType.Permission);
+            ClassicAssert.AreEqual(1, scripts.Count);
+            ClassicAssert.AreEqual(scripts[0].Type, ScriptType.Permission);
 
             ExecuteScripts(scripts);
 
             currentDatabase = ParseDatabase();
             ScriptSet difference = endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-            Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+            ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
         }
 
 		[Test]
@@ -676,14 +677,14 @@ GO
 			endingDatabase.Parse("CREATE TABLE bar( a int)");
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
-			Assert.AreEqual(1, scripts.Count);
-			Assert.AreEqual(scripts[0].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(1, scripts.Count);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.Table);
 
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -693,8 +694,8 @@ GO
 			Table b=new Table("b");
 
 			Difference difference=a.GetDifferences(b, true);
-			Assert.IsNotNull(difference);
-			Assert.AreEqual(1, difference.Messages.Count);
+			ClassicAssert.IsNotNull(difference);
+			ClassicAssert.AreEqual(1, difference.Messages.Count);
 		}
 
 		[Test]
@@ -711,16 +712,16 @@ GO
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(3, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
-			Assert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
 			//the actual script should be tested in the parser tests
 
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
-			Assert.AreEqual(@"INSERT INTO [dbo].[foo] (
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(@"INSERT INTO [dbo].[foo] (
 	[a],
 	[b]
 )
@@ -738,7 +739,7 @@ GO
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 	}
 }

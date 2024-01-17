@@ -16,6 +16,7 @@
  */
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SQLUpdater.Lib;
 using SQLUpdater.Lib.DBTypes;
 using System;
@@ -32,10 +33,10 @@ namespace SQLUpdater.UnitTests.ParserTests
 		{
 			ScriptParser parser=new ScriptParser();
 			parser.Parse("CREATE TABLE foo( a int)");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
 
 			Script createScript=parser.Database.Tables[0].GenerateCreateScript();
-			Assert.AreEqual(@"CREATE TABLE [dbo].[foo](
+			ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[foo](
 	[a] [int] NULL
 )
 
@@ -45,7 +46,7 @@ GO",
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -55,7 +56,7 @@ GO",
 			parser.Parse(@"CREATE TABLE a( b int identity(1, 1) NOT FOR REPLICATION NOT NULL)");
 
 			Script createScript=parser.Database.Tables[0].GenerateCreateScript();
-			Assert.AreEqual(@"CREATE TABLE [dbo].[a](
+			ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[a](
 	[b] [int] IDENTITY(1, 1) NOT FOR REPLICATION NOT NULL
 )
 
@@ -65,7 +66,7 @@ GO",
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -75,7 +76,7 @@ GO",
 			parser.Parse(@"CREATE TABLE a( b int, c AS [b], d AS [b] )");
 
 			Script createScript=parser.Database.Tables[0].GenerateCreateScript();
-			Assert.AreEqual(@"CREATE TABLE [dbo].[a](
+			ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[a](
 	[b] [int] NULL,
 	[c] AS [b],
 	[d] AS [b]
@@ -87,19 +88,18 @@ GO",
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
-		[Test, ExpectedException(ExpectedException=typeof(ApplicationException),
-			ExpectedMessage="An item with the same key has already been added. ([dbo].[foo])\nCREATE TABLE foo( a int)")]
+		[Test]
 		public void CreateTableTwiceTest()
 		{
 			ScriptParser parser=new ScriptParser();
 			parser.Parse("CREATE TABLE foo( a int)");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
 
 			Script createScript=parser.Database.Tables[0].GenerateCreateScript();
-			Assert.AreEqual(@"CREATE TABLE [dbo].[foo](
+			ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[foo](
 	[a] [int] NULL
 )
 
@@ -107,7 +107,12 @@ GO",
 				createScript.Text);
 
 			//second time - by default this should blow up
-			parser.Parse("CREATE TABLE foo( a int)");
+			Assert.Throws<ApplicationException>(() =>
+				{
+					parser.Parse("CREATE TABLE foo( a int)");
+				},
+				"An item with the same key has already been added. ([dbo].[foo])\nCREATE TABLE foo( a int)"
+				);
 		}
 
 		[Test]
@@ -115,10 +120,10 @@ GO",
 		{
 			ScriptParser parser=new ScriptParser();
 			parser.Parse("CREATE TABLE foo( a decimal, b decimal(10, 2))");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
 
 			Script createScript=parser.Database.Tables[0].GenerateCreateScript();
-			Assert.AreEqual(@"CREATE TABLE [dbo].[foo](
+			ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[foo](
 	[a] [decimal](18, 0) NULL,
 	[b] [decimal](10, 2) NULL
 )
@@ -129,7 +134,7 @@ GO",
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -137,10 +142,10 @@ GO",
 		{
 			ScriptParser parser=new ScriptParser();
 			parser.Parse("CREATE TABLE foo( a int) ON Primary");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
 
 			Script createScript=parser.Database.Tables[0].GenerateCreateScript();
-			Assert.AreEqual(@"CREATE TABLE [dbo].[foo](
+			ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[foo](
 	[a] [int] NULL
 ) ON [Primary]
 
@@ -150,7 +155,7 @@ GO",
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -161,18 +166,18 @@ GO",
 			parser.Parse("GRANT SELECT ON foo TO public");
 
 			ScriptSet difference=parser.Database.CreateDiffScripts(new Database());
-			Assert.AreEqual(2, difference.Count);
+			ClassicAssert.AreEqual(2, difference.Count);
 
-			Assert.AreEqual(difference[0].Type, ScriptType.Table);
-			Assert.AreEqual(@"CREATE TABLE [dbo].[FOO](
+			ClassicAssert.AreEqual(difference[0].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[FOO](
 	[a] [int] NULL
 )
 
 GO",
 				difference[0].Text);
 
-			Assert.AreEqual(difference[1].Type, ScriptType.Permission);
-			Assert.AreEqual(@"GRANT SELECT ON [dbo].[FOO] TO [public]
+			ClassicAssert.AreEqual(difference[1].Type, ScriptType.Permission);
+			ClassicAssert.AreEqual(@"GRANT SELECT ON [dbo].[FOO] TO [public]
 
 GO
 
@@ -183,7 +188,7 @@ GO
 
 			ScriptParser database=ParseDatabase();
 			difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -191,10 +196,10 @@ GO
 		{
 			ScriptParser parser=new ScriptParser();
 			parser.Parse("CREATE TABLE foo( a int identity)");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
 
 			Script createScript=parser.Database.Tables[0].GenerateCreateScript();
-			Assert.AreEqual(@"CREATE TABLE [dbo].[foo](
+			ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[foo](
 	[a] [int] IDENTITY(1, 1) NOT NULL
 )
 
@@ -204,7 +209,7 @@ GO",
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -212,10 +217,10 @@ GO",
 		{
 			ScriptParser parser=new ScriptParser();
 			parser.Parse("CREATE TABLE foo( a int identity(0, 1))");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
 
 			Script createScript=parser.Database.Tables[0].GenerateCreateScript();
-			Assert.AreEqual(@"CREATE TABLE [dbo].[foo](
+			ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[foo](
 	[a] [int] IDENTITY(0, 1) NOT NULL
 )
 
@@ -225,7 +230,7 @@ GO",
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -236,31 +241,31 @@ GO",
 			parser.Parse("CREATE TABLE blah.foo( a int primary key)");
 
 			ScriptSet scripts=parser.Database.CreateDiffScripts(new ScriptParser().Database);
-			Assert.AreEqual(4, scripts.Count);
+			ClassicAssert.AreEqual(4, scripts.Count);
 			scripts.Sort();
 
-			Assert.AreEqual(@"CREATE TABLE [blah].[foo](
+			ClassicAssert.AreEqual(@"CREATE TABLE [blah].[foo](
 	[a] [int] NOT NULL
 )
 
 GO",
 				scripts[0].Text);
 
-			Assert.AreEqual(@"CREATE TABLE [dbo].[foo](
+			ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[foo](
 	[a] [int] NOT NULL
 )
 
 GO",
 				scripts[1].Text);
 
-			Assert.AreEqual(@"ALTER TABLE [blah].[foo]
+			ClassicAssert.AreEqual(@"ALTER TABLE [blah].[foo]
 ADD CONSTRAINT [PK_foo]
 PRIMARY KEY(
 	[a]
 )",
 				scripts[2].Text);
 
-			Assert.AreEqual(@"ALTER TABLE [dbo].[foo]
+			ClassicAssert.AreEqual(@"ALTER TABLE [dbo].[foo]
 ADD CONSTRAINT [PK_foo]
 PRIMARY KEY(
 	[a]
@@ -278,12 +283,12 @@ PRIMARY KEY(
 )");
 
 			ScriptSet scripts=parser.Database.CreateDiffScripts(new Database());
-			Assert.AreEqual(2, scripts.Count);
+			ClassicAssert.AreEqual(2, scripts.Count);
 			ExecuteScripts(scripts);
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count);
+			ClassicAssert.AreEqual(0, difference.Count);
         }
 
 		[Test]
@@ -293,12 +298,12 @@ PRIMARY KEY(
 			parser.Parse(@"CREATE TABLE a( b int identity(1,1) PRIMARY KEY )");
 
 			ScriptSet scripts=parser.Database.CreateDiffScripts(new Database());
-			Assert.AreEqual(2, scripts.Count);
+			ClassicAssert.AreEqual(2, scripts.Count);
 			ExecuteScripts(scripts);
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -308,9 +313,9 @@ PRIMARY KEY(
 			parser.Parse("CREATE TABLE blah.foo( a int)");
 
 			ScriptSet scripts=parser.Database.CreateDiffScripts(new ScriptParser().Database);
-			Assert.AreEqual(1, scripts.Count);
+			ClassicAssert.AreEqual(1, scripts.Count);
 
-			Assert.AreEqual(@"CREATE TABLE [blah].[foo](
+			ClassicAssert.AreEqual(@"CREATE TABLE [blah].[foo](
 	[a] [int] NULL
 )
 
@@ -323,10 +328,10 @@ GO",
 		{
 			ScriptParser parser=new ScriptParser();
 			parser.Parse("CREATE TABLE foo( a int, b varchar(max)) TEXTIMAGE_ON Primary");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
 
 			Script createScript=parser.Database.Tables[0].GenerateCreateScript();
-			Assert.AreEqual(@"CREATE TABLE [dbo].[foo](
+			ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[foo](
 	[a] [int] NULL,
 	[b] [varchar](max) NULL
 ) TEXTIMAGE_ON [Primary]
@@ -337,7 +342,7 @@ GO",
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -345,10 +350,10 @@ GO",
 		{
 			ScriptParser parser=new ScriptParser();
 			parser.Parse("CREATE TABLE foo( a varchar(20) COLLATE SQL_Latin1_General_CP1_CI_AS)");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
 
 			Script createScript=parser.Database.Tables[0].GenerateCreateScript();
-			Assert.AreEqual(@"CREATE TABLE [dbo].[foo](
+			ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[foo](
 	[a] [varchar](20) COLLATE SQL_Latin1_General_CP1_CI_AS NULL
 )
 
@@ -358,7 +363,7 @@ GO",
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 	}
 }

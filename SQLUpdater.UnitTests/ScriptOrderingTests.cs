@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SQLUpdater.Lib;
 using SQLUpdater.Lib.DBTypes;
 using System;
@@ -22,23 +23,27 @@ namespace SQLUpdater.UnitTests
 			set.Add(b);
 
             TestLogger logger = (TestLogger)RunOptions.Current.Logger;
-            Assert.IsEmpty(logger.messages);
+            ClassicAssert.IsEmpty(logger.messages);
             set.Sort();
 
-            Assert.AreEqual(1, logger.messages.Count);
-            Assert.AreEqual("Warning: [dbo].[Bar] and [dbo].[Foo] both seem to refer to each other", logger.messages[0]);
-            Assert.AreEqual(OutputLevel.Differences, logger.levels[0]);
+            ClassicAssert.AreEqual(1, logger.messages.Count);
+            ClassicAssert.AreEqual("Warning: [dbo].[Bar] and [dbo].[Foo] both seem to refer to each other", logger.messages[0]);
+            ClassicAssert.AreEqual(OutputLevel.Differences, logger.levels[0]);
         }
 
-		[Test, ExpectedException(ExpectedException=typeof(ApplicationException),
-			ExpectedMessage="Adding duplicate script: [dbo].[Foo] [Unknown]")]
+		[Test]
 		public void ScriptTwiceTest()
 		{
-			ScriptSet set=new ScriptSet();
-			Script a=new Script("Foo", "Foo", ScriptType.Unknown);
+			ScriptSet set = new ScriptSet();
+			Script a = new Script("Foo", "Foo", ScriptType.Unknown);
 			set.Add(a);
-			Script b=new Script("Foo", "Foo", ScriptType.Unknown);
-			set.Add(b);
+			Script b = new Script("Foo", "Foo", ScriptType.Unknown);
+			Assert.Throws<ApplicationException>(() =>
+				{
+					set.Add(b);
+				},
+                "Adding duplicate script: [dbo].[Foo] [Unknown]"
+            );
 		}
 
 		[Test]
@@ -55,9 +60,9 @@ AS
 SELECT FooID, 
 	dbo.bar(FooID) 'bonk'
 FROM dbo.foo");
-			Assert.AreEqual(1, startingDatabase.Database.Functions.Count);
-			Assert.AreEqual(1, startingDatabase.Database.Tables.Count);
-			Assert.AreEqual(1, startingDatabase.Database.Views.Count);
+			ClassicAssert.AreEqual(1, startingDatabase.Database.Functions.Count);
+			ClassicAssert.AreEqual(1, startingDatabase.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, startingDatabase.Database.Views.Count);
 
 			//make sure this runs
 			ScriptParser currentDatabase=new ScriptParser();
@@ -67,7 +72,7 @@ FROM dbo.foo");
 			//make sure it got results
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=startingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 	}
 }

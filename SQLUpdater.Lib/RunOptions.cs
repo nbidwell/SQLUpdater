@@ -263,6 +263,9 @@ namespace SQLUpdater.Lib
                         }
                         break;
 
+					case null:
+						break;
+
 					default:
 						if(args[i][0]=='-' || (Connections.References.Count>0 && Connections.Targets.Count>0))
 						{

@@ -16,6 +16,7 @@
  */
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SQLUpdater.Lib;
 using SQLUpdater.Lib.DBTypes;
 using System;
@@ -31,39 +32,39 @@ namespace SQLUpdater.UnitTests
 		public void DataTest()
 		{
 			ScriptSet scripts=ScriptManager.LoadScripts("TestData\\DataTest");
-			Assert.AreEqual(2, scripts.Count);
-			Assert.AreEqual(ScriptType.Table, scripts[0].Type);
-			Assert.AreEqual(ScriptType.TableData, scripts[1].Type);
+			ClassicAssert.AreEqual(2, scripts.Count);
+			ClassicAssert.AreEqual(ScriptType.Table, scripts[0].Type);
+			ClassicAssert.AreEqual(ScriptType.TableData, scripts[1].Type);
 
 			ScriptParser parser=new ScriptParser();
 			parser.RetrieveParsableObjects(scripts);
-			Assert.AreEqual(0, scripts.Count);
-			Assert.AreEqual(1, parser.Database.Tables.Count);
-			Assert.AreEqual(2, parser.Database.Tables[0].Data.Count);
+			ClassicAssert.AreEqual(0, scripts.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(2, parser.Database.Tables[0].Data.Count);
 
 			ScriptSet differences=parser.Database.CreateDiffScripts(new Database());
 			differences.Sort();
-			Assert.AreEqual(2, differences.Count);
-			Assert.AreEqual(ScriptType.Table, differences[0].Type);
-			Assert.AreEqual(ScriptType.TableData, differences[1].Type);
+			ClassicAssert.AreEqual(2, differences.Count);
+			ClassicAssert.AreEqual(ScriptType.Table, differences[0].Type);
+			ClassicAssert.AreEqual(ScriptType.TableData, differences[1].Type);
 		}
 
 		[Test]
 		public void TableTest()
 		{
 			ScriptSet scripts=ScriptManager.LoadScripts("TestData\\TableTest");
-			Assert.AreEqual(1, scripts.Count);
-			Assert.AreEqual(ScriptType.Table, scripts[0].Type);
+			ClassicAssert.AreEqual(1, scripts.Count);
+			ClassicAssert.AreEqual(ScriptType.Table, scripts[0].Type);
 
 			ScriptParser parser=new ScriptParser();
 			parser.RetrieveParsableObjects(scripts);
-			Assert.AreEqual(0, scripts.Count);
-			Assert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(0, scripts.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
 
 			ScriptSet differences=parser.Database.CreateDiffScripts(new Database());
 			differences.Sort();
-			Assert.AreEqual(1, differences.Count);
-			Assert.AreEqual(ScriptType.Table, differences[0].Type);
+			ClassicAssert.AreEqual(1, differences.Count);
+			ClassicAssert.AreEqual(ScriptType.Table, differences[0].Type);
 		}
 	}
 }

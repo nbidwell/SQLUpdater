@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SQLUpdater.Lib;
 using SQLUpdater.Lib.DBTypes;
 using System;
@@ -16,11 +17,11 @@ namespace SQLUpdater.UnitTests.ParserTests
 			ScriptParser parser=new ScriptParser();
 			parser.Parse("CREATE TABLE foo( a int)");
 			parser.Parse("CREATE PROCEDURE A (@B int) AS SELECT * FROM foo");
-			Assert.AreEqual(1, parser.Database.Procedures.Count);
-			Assert.AreEqual("CREATE PROCEDURE A (@B int) AS SELECT * FROM foo", parser.Database.Procedures[0].Body);
+			ClassicAssert.AreEqual(1, parser.Database.Procedures.Count);
+			ClassicAssert.AreEqual("CREATE PROCEDURE A (@B int) AS SELECT * FROM foo", parser.Database.Procedures[0].Body);
 
 			Script createScript=parser.Database.Procedures[0].GenerateCreateScript();
-			Assert.AreEqual(@"CREATE PROCEDURE A (@B int) AS SELECT * FROM foo
+			ClassicAssert.AreEqual(@"CREATE PROCEDURE A (@B int) AS SELECT * FROM foo
 GO",
 				createScript.Text);
 			ExecuteScripts(parser.Database.Tables[0].GenerateCreateScript());
@@ -28,7 +29,7 @@ GO",
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -39,13 +40,13 @@ GO",
             parser.Parse("CREATE PROCEDURE A (@B int) AS SELECT * FROM foo GO GRANT Execute ON A TO public");
 
 			ScriptSet difference=parser.Database.CreateDiffScripts(new Database());
-			Assert.AreEqual(3, difference.Count);
+			ClassicAssert.AreEqual(3, difference.Count);
 
-			Assert.AreEqual(difference[0].Type, ScriptType.Table);
-			Assert.AreEqual(difference[1].Type, ScriptType.StoredProc);
+			ClassicAssert.AreEqual(difference[0].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(difference[1].Type, ScriptType.StoredProc);
 
-			Assert.AreEqual(difference[2].Type, ScriptType.Permission);
-            Assert.AreEqual(@"GRANT Execute ON [dbo].[A] TO [public]
+			ClassicAssert.AreEqual(difference[2].Type, ScriptType.Permission);
+            ClassicAssert.AreEqual(@"GRANT Execute ON [dbo].[A] TO [public]
 
 GO
 
@@ -56,7 +57,7 @@ GO
 
 			ScriptParser database=ParseDatabase();
 			difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 	}
 }

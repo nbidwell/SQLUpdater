@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SQLUpdater.Lib;
 using SQLUpdater.Lib.DBTypes;
 using System;
@@ -15,18 +16,18 @@ namespace SQLUpdater.UnitTests.ParserTests
 		{
 			ScriptParser parser=new ScriptParser();
 			parser.Parse("CREATE Function A (@B int) RETURNS int AS BEGIN RETURN @B END");
-			Assert.AreEqual(1, parser.Database.Functions.Count);
-			Assert.AreEqual("CREATE Function A (@B int) RETURNS int AS BEGIN RETURN @B END", parser.Database.Functions[0].Body);
+			ClassicAssert.AreEqual(1, parser.Database.Functions.Count);
+			ClassicAssert.AreEqual("CREATE Function A (@B int) RETURNS int AS BEGIN RETURN @B END", parser.Database.Functions[0].Body);
 
 			Script createScript=parser.Database.Functions[0].GenerateCreateScript();
-			Assert.AreEqual(@"CREATE Function A (@B int) RETURNS int AS BEGIN RETURN @B END
+			ClassicAssert.AreEqual(@"CREATE Function A (@B int) RETURNS int AS BEGIN RETURN @B END
 GO",
 				createScript.Text);
 			ExecuteScripts(createScript);
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -37,12 +38,12 @@ GO",
 			parser.Parse("GRANT Execute ON A TO public");
 
 			ScriptSet difference=parser.Database.CreateDiffScripts(new Database());
-			Assert.AreEqual(2, difference.Count);
+			ClassicAssert.AreEqual(2, difference.Count);
 
-			Assert.AreEqual(difference[0].Type, ScriptType.UserDefinedFunction);
+			ClassicAssert.AreEqual(difference[0].Type, ScriptType.UserDefinedFunction);
 
-			Assert.AreEqual(difference[1].Type, ScriptType.Permission);
-            Assert.AreEqual(@"GRANT Execute ON [dbo].[A] TO [public]
+			ClassicAssert.AreEqual(difference[1].Type, ScriptType.Permission);
+            ClassicAssert.AreEqual(@"GRANT Execute ON [dbo].[A] TO [public]
 
 GO
 
@@ -53,7 +54,7 @@ GO
 
 			ScriptParser database=ParseDatabase();
 			difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 	}
 }

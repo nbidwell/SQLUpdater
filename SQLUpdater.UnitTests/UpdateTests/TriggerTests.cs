@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SQLUpdater.Lib;
 using SQLUpdater.Lib.DBTypes;
 using System;
@@ -27,10 +28,10 @@ namespace SQLUpdater.UnitTests.UpdateTests
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(2, scripts.Count);
+			ClassicAssert.AreEqual(2, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.DropTrigger);
-			Assert.AreEqual(@"if exists(
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.DropTrigger);
+			ClassicAssert.AreEqual(@"if exists(
 	select 1
 	from dbo.sysobjects
 	where type = 'TR' AND id = object_id('[dbo].[A]')
@@ -39,13 +40,13 @@ DROP TRIGGER [dbo].[A]
 
 GO", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Trigger);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Trigger);
 			//the actual script should be tested in the parser tests
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -64,14 +65,14 @@ GO", scripts[0].Text);
 			endingDatabase.Parse("CREATE Trigger B ON foo FOR INSERT AS SELECT 1");
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
-			Assert.AreEqual(1, scripts.Count);
-			Assert.AreEqual(scripts[0].Type, ScriptType.Trigger);
+			ClassicAssert.AreEqual(1, scripts.Count);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.Trigger);
 
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -81,8 +82,8 @@ GO", scripts[0].Text);
 			Trigger b=new Trigger("b", "", "foo");
 
 			Difference difference=a.GetDifferences(b, true);
-			Assert.IsNotNull(difference);
-			Assert.AreEqual(1, difference.Messages.Count);
+			ClassicAssert.IsNotNull(difference);
+			ClassicAssert.AreEqual(1, difference.Messages.Count);
 		}
 	}
 }

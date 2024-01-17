@@ -16,6 +16,7 @@
  */
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SQLUpdater.Lib.DBTypes;
 using System;
 using System.Collections.Generic;
@@ -31,23 +32,23 @@ namespace SQLUpdater.UnitTests
 		public void ComparisonTest()
 		{
 			Name a="dbo.a.b";
-			Assert.IsTrue(a=="dbo.a.b");
-			Assert.IsFalse(a=="dbo.a.c");
-			Assert.IsFalse(a=="dbo.c.b");
-			Assert.IsFalse(a=="foo.a.b");
-			Assert.IsFalse(a==null);
-			Assert.IsFalse(((Name)null)==a);
-			Assert.IsTrue(((Name)null)==((Name)null));
+			ClassicAssert.IsTrue(a=="dbo.a.b");
+			ClassicAssert.IsFalse(a=="dbo.a.c");
+			ClassicAssert.IsFalse(a=="dbo.c.b");
+			ClassicAssert.IsFalse(a=="foo.a.b");
+			ClassicAssert.IsFalse(a==null);
+			ClassicAssert.IsFalse(((Name)null)==a);
+			ClassicAssert.IsTrue(((Name)null)==((Name)null));
 		}
 
 		[Test]
 		public void NameTest()
 		{
 			Name name="dbo.a.b";
-			Assert.AreEqual("[dbo].[a].[b]", name.ToString());
-			Assert.AreEqual("[dbo]", name.Database.ToString());
-			Assert.AreEqual("[a]", name.Owner.ToString());
-			Assert.AreEqual("[b]", name.Object.ToString());
+			ClassicAssert.AreEqual("[dbo].[a].[b]", name.ToString());
+			ClassicAssert.AreEqual("[dbo]", name.Database.ToString());
+			ClassicAssert.AreEqual("[a]", name.Owner.ToString());
+			ClassicAssert.AreEqual("[b]", name.Object.ToString());
 		}
 	}
 }

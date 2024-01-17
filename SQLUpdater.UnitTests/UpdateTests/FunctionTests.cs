@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SQLUpdater.Lib;
 using SQLUpdater.Lib.DBTypes;
 using System;
@@ -24,20 +25,20 @@ namespace SQLUpdater.UnitTests.UpdateTests
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(2, scripts.Count);
+			ClassicAssert.AreEqual(2, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.DropUserDefinedFunction);
-			Assert.AreEqual(@"DROP FUNCTION [dbo].[A]
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.DropUserDefinedFunction);
+			ClassicAssert.AreEqual(@"DROP FUNCTION [dbo].[A]
 
 GO", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.UserDefinedFunction);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.UserDefinedFunction);
 			//the actual script should be tested in the parser tests
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count);
+			ClassicAssert.AreEqual(0, difference.Count);
 		}
 
 		[Test]
@@ -55,14 +56,14 @@ GO", scripts[0].Text);
 			endingDatabase.Parse("CREATE Function B (@B int) RETURNS int AS BEGIN RETURN @B END");
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
-			Assert.AreEqual(1, scripts.Count);
-			Assert.AreEqual(scripts[0].Type, ScriptType.UserDefinedFunction);
+			ClassicAssert.AreEqual(1, scripts.Count);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.UserDefinedFunction);
 
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count);
+			ClassicAssert.AreEqual(0, difference.Count);
 		}
 
 		[Test]
@@ -72,8 +73,8 @@ GO", scripts[0].Text);
 			Function b=new Function("b", "");
 
 			Difference difference=a.GetDifferences(b, true);
-			Assert.IsNotNull(difference);
-			Assert.AreEqual(1, difference.Messages.Count);
+			ClassicAssert.IsNotNull(difference);
+			ClassicAssert.AreEqual(1, difference.Messages.Count);
 		}
 
 		[Test]
@@ -92,22 +93,22 @@ GO", scripts[0].Text);
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(3, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.DropUserDefinedFunction);
-			Assert.AreEqual(@"DROP FUNCTION [dbo].[A]
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.DropUserDefinedFunction);
+			ClassicAssert.AreEqual(@"DROP FUNCTION [dbo].[A]
 
 GO", scripts[0].Text);
 
 			//the actual script should be tested in the parser tests
-			Assert.AreEqual(scripts[1].Type, ScriptType.UserDefinedFunction);
-			Assert.AreEqual(scripts[2].Type, ScriptType.Permission);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.UserDefinedFunction);
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.Permission);
 
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count);
+			ClassicAssert.AreEqual(0, difference.Count);
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SQLUpdater.Lib;
 using SQLUpdater.Lib.DBTypes;
 using System;
@@ -16,17 +17,17 @@ namespace SQLUpdater.UnitTests.ParserTests
         {
             ScriptParser parser = new ScriptParser();
             parser.Parse("CREATE FULLTEXT CATALOG FulltextCatalog");
-            Assert.AreEqual(1, parser.Database.FulltextCatalogs.Count);
+            ClassicAssert.AreEqual(1, parser.Database.FulltextCatalogs.Count);
 
             Script createScript = parser.Database.FulltextCatalogs[0].GenerateCreateScript();
-            Assert.AreEqual(@"CREATE FULLTEXT CATALOG [FulltextCatalog]
+            ClassicAssert.AreEqual(@"CREATE FULLTEXT CATALOG [FulltextCatalog]
 ",
                 createScript.Text);
             ExecuteScripts(createScript);
 
             ScriptParser database = ParseDatabase();
             ScriptSet difference = parser.Database.CreateDiffScripts(database.Database);
-            Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+            ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
         }
 
         [Test]
@@ -41,10 +42,10 @@ GRANT SELECT ON dbo.Foo to PUBLIC as dbo",
 
             ScriptParser parser = new ScriptParser();
             parser.RetrieveParsableObjects(scripts);
-            Assert.AreEqual(0, scripts.Count);
-            Assert.AreEqual(1, parser.Database.Tables.Count);
+            ClassicAssert.AreEqual(0, scripts.Count);
+            ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
 
-            Assert.AreEqual(0, ((TestLogger)RunOptions.Current.Logger).messages.Count);
+            ClassicAssert.AreEqual(0, ((TestLogger)RunOptions.Current.Logger).messages.Count);
         }
 
 		[Test]
@@ -69,8 +70,8 @@ GRANT SELECT ON dbo.Foo to PUBLIC",
 
 			ScriptParser parser=new ScriptParser();
 			parser.RetrieveParsableObjects(scripts);
-			Assert.AreEqual(0, scripts.Count);
-			Assert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(0, scripts.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
 		}
 
         [Test]
@@ -82,7 +83,7 @@ GRANT SELECT ON dbo.Foo to PUBLIC",
 
 			ScriptParser parser=new ScriptParser();
 			parser.RetrieveParsableObjects(scripts);
-			Assert.AreEqual(0, scripts.Count);
+			ClassicAssert.AreEqual(0, scripts.Count);
         }
 
 		[Test]
@@ -93,7 +94,7 @@ GRANT SELECT ON dbo.Foo to PUBLIC",
 
 			ScriptParser parser=new ScriptParser();
 			parser.RetrieveParsableObjects(scripts);
-			Assert.AreEqual(1, scripts.Count);
+			ClassicAssert.AreEqual(1, scripts.Count);
 		}
 	}
 }

@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SQLUpdater.Lib;
 using SQLUpdater.Lib.DBTypes;
 using System;
@@ -22,7 +23,7 @@ namespace SQLUpdater.UnitTests
 
 			ScriptParser currentDatabase=ParseDatabase();
 			scripts=currentDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, scripts.Count);
+			ClassicAssert.AreEqual(0, scripts.Count);
 		}
 
 		[Test]
@@ -44,11 +45,11 @@ PRIMARY KEY CLUSTERED(a)");
 
 			scripts=modifiedDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(4, scripts.Count);
-			Assert.AreEqual(ScriptType.DropForeignKey, scripts[0].Type);
-			Assert.AreEqual(ScriptType.DropPrimaryKey, scripts[1].Type);
-			Assert.AreEqual(ScriptType.PrimaryKey, scripts[2].Type);
-			Assert.AreEqual(ScriptType.ForeignKey, scripts[3].Type);
+			ClassicAssert.AreEqual(4, scripts.Count);
+			ClassicAssert.AreEqual(ScriptType.DropForeignKey, scripts[0].Type);
+			ClassicAssert.AreEqual(ScriptType.DropPrimaryKey, scripts[1].Type);
+			ClassicAssert.AreEqual(ScriptType.PrimaryKey, scripts[2].Type);
+			ClassicAssert.AreEqual(ScriptType.ForeignKey, scripts[3].Type);
 
 			ExecuteScripts(scripts);
 		}
@@ -64,7 +65,7 @@ PRIMARY KEY CLUSTERED(a)");
 
 			ScriptSet scripts=startingDatabase.Database.CreateDiffScripts(new Database());
 			scripts.Sort();
-			Assert.AreEqual(4, scripts.Count);
+			ClassicAssert.AreEqual(4, scripts.Count);
 			ExecuteScripts(scripts);
 
 			ScriptParser modifiedDatabase=new ScriptParser();
@@ -75,12 +76,12 @@ PRIMARY KEY CLUSTERED(a)");
 
 			scripts=modifiedDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(5, scripts.Count);
-			Assert.AreEqual(ScriptType.DropStoredProc, scripts[0].Type);
-			Assert.AreEqual(ScriptType.TableSaveData, scripts[1].Type);
-			Assert.AreEqual(ScriptType.Table, scripts[2].Type);
-			Assert.AreEqual(ScriptType.TableRestoreData, scripts[3].Type);
-			Assert.AreEqual(ScriptType.StoredProc, scripts[4].Type);
+			ClassicAssert.AreEqual(5, scripts.Count);
+			ClassicAssert.AreEqual(ScriptType.DropStoredProc, scripts[0].Type);
+			ClassicAssert.AreEqual(ScriptType.TableSaveData, scripts[1].Type);
+			ClassicAssert.AreEqual(ScriptType.Table, scripts[2].Type);
+			ClassicAssert.AreEqual(ScriptType.TableRestoreData, scripts[3].Type);
+			ClassicAssert.AreEqual(ScriptType.StoredProc, scripts[4].Type);
 
 			ExecuteScripts(scripts);
 		}
@@ -94,7 +95,7 @@ PRIMARY KEY CLUSTERED(a)");
 
 			ScriptSet scripts=startingDatabase.Database.CreateDiffScripts(new Database());
 			scripts.Sort();
-			Assert.AreEqual(2, scripts.Count);
+			ClassicAssert.AreEqual(2, scripts.Count);
 			ExecuteScripts(scripts);
 
             ScriptParser modifiedDatabase = new ScriptParser();
@@ -103,11 +104,11 @@ PRIMARY KEY CLUSTERED(a)");
 
 			scripts=modifiedDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(4, scripts.Count);
-			Assert.AreEqual(ScriptType.DropStoredProc, scripts[0].Type);
-			Assert.AreEqual(ScriptType.DropTableType, scripts[1].Type);
-			Assert.AreEqual(ScriptType.TableType, scripts[2].Type);
-			Assert.AreEqual(ScriptType.StoredProc, scripts[3].Type);
+			ClassicAssert.AreEqual(4, scripts.Count);
+			ClassicAssert.AreEqual(ScriptType.DropStoredProc, scripts[0].Type);
+			ClassicAssert.AreEqual(ScriptType.DropTableType, scripts[1].Type);
+			ClassicAssert.AreEqual(ScriptType.TableType, scripts[2].Type);
+			ClassicAssert.AreEqual(ScriptType.StoredProc, scripts[3].Type);
 
 			ExecuteScripts(scripts);
 		}
@@ -128,7 +129,7 @@ PRIMARY KEY CLUSTERED(a)");
 			currentDatabase=ParseDatabase();
 			GetData(currentDatabase.Database, startingDatabase.Database.GetTablesWithData());
 			ScriptSet difference=startingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 
 			ScriptParser endingDatabase=new ScriptParser();
 			endingDatabase.Parse("CREATE TABLE foo( a int PRIMARY KEY, b int)");
@@ -138,28 +139,28 @@ PRIMARY KEY CLUSTERED(a)");
 
 			scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(4, scripts.Count);
+			ClassicAssert.AreEqual(4, scripts.Count);
 
-			Assert.AreEqual(ScriptType.DropForeignKey, scripts[0].Type);
-			Assert.AreEqual(ScriptType.TableRemoveData, scripts[1].Type);
-			Assert.AreEqual(@"DELETE FROM [dbo].[foo]
+			ClassicAssert.AreEqual(ScriptType.DropForeignKey, scripts[0].Type);
+			ClassicAssert.AreEqual(ScriptType.TableRemoveData, scripts[1].Type);
+			ClassicAssert.AreEqual(@"DELETE FROM [dbo].[foo]
 WHERE
 	[a] = 1
 
 ", scripts[1].Text);
-			Assert.AreEqual(ScriptType.TableData, scripts[2].Type);
-			Assert.AreEqual(@"INSERT INTO [dbo].[foo]([a], [b])
+			ClassicAssert.AreEqual(ScriptType.TableData, scripts[2].Type);
+			ClassicAssert.AreEqual(@"INSERT INTO [dbo].[foo]([a], [b])
 VALUES(1, 2)
 
 ", scripts[2].Text);
-			Assert.AreEqual(ScriptType.ForeignKey, scripts[3].Type);
+			ClassicAssert.AreEqual(ScriptType.ForeignKey, scripts[3].Type);
 
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			GetData(currentDatabase.Database, endingDatabase.Database.GetTablesWithData());
 			difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -178,7 +179,7 @@ VALUES(1, 2)
 			currentDatabase=ParseDatabase();
 			GetData(currentDatabase.Database, startingDatabase.Database.GetTablesWithData());
 			ScriptSet difference=startingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 
 			ScriptParser endingDatabase=new ScriptParser();
 			endingDatabase.Parse("CREATE TABLE foo( a int PRIMARY KEY, b int)");
@@ -188,34 +189,34 @@ VALUES(1, 2)
 
 			scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(7, scripts.Count);
+			ClassicAssert.AreEqual(7, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.DropForeignKey);
-			Assert.AreEqual(@"ALTER TABLE [dbo].[bar] DROP CONSTRAINT [FK_bar_foo]", scripts[0].Text);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.DropForeignKey);
+			ClassicAssert.AreEqual(@"ALTER TABLE [dbo].[bar] DROP CONSTRAINT [FK_bar_foo]", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.DropPrimaryKey);
-			Assert.AreEqual(@"ALTER TABLE [dbo].[foo] DROP CONSTRAINT [PK_foo]", scripts[1].Text);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.DropPrimaryKey);
+			ClassicAssert.AreEqual(@"ALTER TABLE [dbo].[foo] DROP CONSTRAINT [PK_foo]", scripts[1].Text);
 
-			Assert.AreEqual(scripts[2].Type, ScriptType.TableSaveData);
-			Assert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[2].Text);
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.TableSaveData);
+			ClassicAssert.AreEqual("EXEC sp_rename '[dbo].[foo]', 'Tmp__foo', 'OBJECT'", scripts[2].Text);
 
-			Assert.AreEqual(scripts[3].Type, ScriptType.Table);
-			Assert.AreEqual(@"CREATE TABLE [dbo].[foo](
+			ClassicAssert.AreEqual(scripts[3].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[foo](
 	[a] [int] NOT NULL,
 	[b] [int] NULL
 )
 
 GO", scripts[3].Text);
 
-			Assert.AreEqual(scripts[4].Type, ScriptType.PrimaryKey);
-			Assert.AreEqual(@"ALTER TABLE [dbo].[foo]
+			ClassicAssert.AreEqual(scripts[4].Type, ScriptType.PrimaryKey);
+			ClassicAssert.AreEqual(@"ALTER TABLE [dbo].[foo]
 ADD CONSTRAINT [PK_foo]
 PRIMARY KEY(
 	[a]
 )", scripts[4].Text);
 
-			Assert.AreEqual(scripts[5].Type, ScriptType.TableRestoreData);
-			Assert.AreEqual(@"INSERT INTO [dbo].[foo] (
+			ClassicAssert.AreEqual(scripts[5].Type, ScriptType.TableRestoreData);
+			ClassicAssert.AreEqual(@"INSERT INTO [dbo].[foo] (
 	[a]
 )
 SELECT
@@ -228,8 +229,8 @@ GO
 
 ", scripts[5].Text);
 
-			Assert.AreEqual(scripts[6].Type, ScriptType.ForeignKey);
-			Assert.AreEqual(@"ALTER TABLE [dbo].[bar]
+			ClassicAssert.AreEqual(scripts[6].Type, ScriptType.ForeignKey);
+			ClassicAssert.AreEqual(@"ALTER TABLE [dbo].[bar]
 ADD CONSTRAINT [FK_bar_foo]
 FOREIGN KEY(
 	[c]
@@ -243,7 +244,7 @@ REFERENCES [dbo].[foo](
 			currentDatabase=ParseDatabase();
 			GetData(currentDatabase.Database, endingDatabase.Database.GetTablesWithData());
 			difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 	}
 }

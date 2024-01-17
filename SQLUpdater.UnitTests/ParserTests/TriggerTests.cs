@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SQLUpdater.Lib;
 using SQLUpdater.Lib.DBTypes;
 using System;
@@ -16,20 +17,20 @@ namespace SQLUpdater.UnitTests.ParserTests
 			ScriptParser parser=new ScriptParser();
 			parser.Parse("CREATE TABLE foo( a int)");
 			parser.Parse("CREATE Trigger A ON foo FOR INSERT AS SELECT 1");
-			Assert.AreEqual(1, parser.Database.Triggers.Count);
-			Assert.AreEqual("CREATE Trigger A ON foo FOR INSERT AS SELECT 1", parser.Database.Triggers[0].Body);
-			Assert.AreEqual((Name)"foo", parser.Database.Triggers[0].ReferencedTable);
+			ClassicAssert.AreEqual(1, parser.Database.Triggers.Count);
+			ClassicAssert.AreEqual("CREATE Trigger A ON foo FOR INSERT AS SELECT 1", parser.Database.Triggers[0].Body);
+			ClassicAssert.AreEqual((Name)"foo", parser.Database.Triggers[0].ReferencedTable);
 
 			ScriptSet difference=parser.Database.CreateDiffScripts(new Database());
-			Assert.AreEqual(2, difference.Count);
-			Assert.AreEqual(@"CREATE Trigger A ON foo FOR INSERT AS SELECT 1
+			ClassicAssert.AreEqual(2, difference.Count);
+			ClassicAssert.AreEqual(@"CREATE Trigger A ON foo FOR INSERT AS SELECT 1
 GO",
 				difference[1].Text);
 			ExecuteScripts(difference);
 
 			ScriptParser database=ParseDatabase();
 			difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -41,12 +42,12 @@ GO",
 			parser.Parse("EXEC sp_settriggerorder @triggername='A', @order='First', @stmttype='INSERT'");
 
 			ScriptSet createScripts=parser.Database.CreateDiffScripts(new Database());
-			Assert.AreEqual(3, createScripts.Count);
+			ClassicAssert.AreEqual(3, createScripts.Count);
 			ExecuteScripts(createScripts);
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
         }
 
         [Test]
@@ -55,20 +56,20 @@ GO",
             ScriptParser parser = new ScriptParser();
             parser.Parse("CREATE TABLE guest.foo( a int)");
             parser.Parse("CREATE Trigger guest.A ON guest.foo FOR INSERT AS SELECT 1");
-            Assert.AreEqual(1, parser.Database.Triggers.Count);
-            Assert.AreEqual("CREATE Trigger guest.A ON guest.foo FOR INSERT AS SELECT 1", parser.Database.Triggers[0].Body);
-            Assert.AreEqual((Name)"guest.foo", parser.Database.Triggers[0].ReferencedTable);
+            ClassicAssert.AreEqual(1, parser.Database.Triggers.Count);
+            ClassicAssert.AreEqual("CREATE Trigger guest.A ON guest.foo FOR INSERT AS SELECT 1", parser.Database.Triggers[0].Body);
+            ClassicAssert.AreEqual((Name)"guest.foo", parser.Database.Triggers[0].ReferencedTable);
 
             ScriptSet difference = parser.Database.CreateDiffScripts(new Database());
-            Assert.AreEqual(2, difference.Count);
-            Assert.AreEqual(@"CREATE Trigger guest.A ON guest.foo FOR INSERT AS SELECT 1
+            ClassicAssert.AreEqual(2, difference.Count);
+            ClassicAssert.AreEqual(@"CREATE Trigger guest.A ON guest.foo FOR INSERT AS SELECT 1
 GO",
                 difference[1].Text);
             ExecuteScripts(difference);
 
             ScriptParser database = ParseDatabase();
             difference = parser.Database.CreateDiffScripts(database.Database);
-            Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+            ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
         }
 	}
 }

@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SQLUpdater.Lib;
 using SQLUpdater.Lib.DBTypes;
 using System;
@@ -26,19 +27,19 @@ namespace SQLUpdater.UnitTests.UpdateTests
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(2, scripts.Count);
+			ClassicAssert.AreEqual(2, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
-			Assert.AreEqual(@"DROP INDEX [foo_a] ON [dbo].[foo]
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
+			ClassicAssert.AreEqual(@"DROP INDEX [foo_a] ON [dbo].[foo]
 ", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.ClusteredIndex);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.ClusteredIndex);
 			//the actual script should be tested in the parser tests
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -57,19 +58,19 @@ namespace SQLUpdater.UnitTests.UpdateTests
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(2, scripts.Count);
+			ClassicAssert.AreEqual(2, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
-			Assert.AreEqual(@"DROP INDEX [foo_a] ON [dbo].[foo]
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
+			ClassicAssert.AreEqual(@"DROP INDEX [foo_a] ON [dbo].[foo]
 ", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Index);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Index);
 			//the actual script should be tested in the parser tests
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -88,19 +89,19 @@ namespace SQLUpdater.UnitTests.UpdateTests
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(2, scripts.Count);
+			ClassicAssert.AreEqual(2, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
-			Assert.AreEqual(@"DROP INDEX [foo_a] ON [dbo].[foo]
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
+			ClassicAssert.AreEqual(@"DROP INDEX [foo_a] ON [dbo].[foo]
 ", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Index);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Index);
 			//the actual script should be tested in the parser tests
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -119,19 +120,19 @@ namespace SQLUpdater.UnitTests.UpdateTests
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(2, scripts.Count);
+			ClassicAssert.AreEqual(2, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
-			Assert.AreEqual(@"DROP INDEX [foo_a] ON [dbo].[foo]
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
+			ClassicAssert.AreEqual(@"DROP INDEX [foo_a] ON [dbo].[foo]
 ", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Index);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Index);
 			//the actual script should be tested in the parser tests
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -145,11 +146,11 @@ namespace SQLUpdater.UnitTests.UpdateTests
 
 			ScriptSet scripts=parser.Database.CreateDiffScripts(new Database());
 			scripts.Sort();
-			Assert.AreEqual(4, scripts.Count);
-			Assert.AreEqual(ScriptType.Table, scripts[0].Type);
-			Assert.AreEqual(ScriptType.View, scripts[1].Type);
-			Assert.AreEqual(ScriptType.ClusteredIndex, scripts[2].Type);
-			Assert.AreEqual(ScriptType.Index, scripts[3].Type);
+			ClassicAssert.AreEqual(4, scripts.Count);
+			ClassicAssert.AreEqual(ScriptType.Table, scripts[0].Type);
+			ClassicAssert.AreEqual(ScriptType.View, scripts[1].Type);
+			ClassicAssert.AreEqual(ScriptType.ClusteredIndex, scripts[2].Type);
+			ClassicAssert.AreEqual(ScriptType.Index, scripts[3].Type);
 			ExecuteScripts(scripts);
 			
 			parser=new ScriptParser();
@@ -161,13 +162,13 @@ namespace SQLUpdater.UnitTests.UpdateTests
 			ScriptParser currentDatabase=ParseDatabase();
 			scripts=parser.Database.CreateDiffScripts(currentDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(6, scripts.Count);
-			Assert.AreEqual(ScriptType.DropIndex, scripts[0].Type);
-			Assert.AreEqual(ScriptType.DropClusteredIndex, scripts[1].Type);
-			Assert.AreEqual(ScriptType.DropView, scripts[2].Type);
-			Assert.AreEqual(ScriptType.View, scripts[3].Type);
-			Assert.AreEqual(ScriptType.ClusteredIndex, scripts[4].Type);
-			Assert.AreEqual(ScriptType.Index, scripts[5].Type);
+			ClassicAssert.AreEqual(6, scripts.Count);
+			ClassicAssert.AreEqual(ScriptType.DropIndex, scripts[0].Type);
+			ClassicAssert.AreEqual(ScriptType.DropClusteredIndex, scripts[1].Type);
+			ClassicAssert.AreEqual(ScriptType.DropView, scripts[2].Type);
+			ClassicAssert.AreEqual(ScriptType.View, scripts[3].Type);
+			ClassicAssert.AreEqual(ScriptType.ClusteredIndex, scripts[4].Type);
+			ClassicAssert.AreEqual(ScriptType.Index, scripts[5].Type);
 			ExecuteScripts(scripts);
 		}
 
@@ -182,14 +183,14 @@ CREATE INDEX IX_a_b ON guest.a(b)");
 
 			ScriptSet scripts=parser.Database.CreateDiffScripts(new Database());
 			scripts.Sort();
-			Assert.AreEqual(2, scripts.Count);
-			Assert.AreEqual(ScriptType.Table, scripts[0].Type);
-			Assert.AreEqual(ScriptType.Index, scripts[1].Type);
+			ClassicAssert.AreEqual(2, scripts.Count);
+			ClassicAssert.AreEqual(ScriptType.Table, scripts[0].Type);
+			ClassicAssert.AreEqual(ScriptType.Index, scripts[1].Type);
 			ExecuteScripts(scripts);
 
 			ScriptParser currentDatabase=ParseDatabase();
 			scripts=parser.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, scripts.Count);
+			ClassicAssert.AreEqual(0, scripts.Count);
 
 			parser=new ScriptParser();
 			parser.Parse(@"CREATE TABLE guest.a(b varchar(25), x int)
@@ -199,17 +200,17 @@ CREATE INDEX IX_a_b ON guest.a(b)");
 
 			scripts=parser.Database.CreateDiffScripts(currentDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(5, scripts.Count);
-			Assert.AreEqual(ScriptType.DropIndex, scripts[0].Type);
-			Assert.AreEqual(ScriptType.TableSaveData, scripts[1].Type);
-			Assert.AreEqual(ScriptType.Table, scripts[2].Type);
-			Assert.AreEqual(ScriptType.Index, scripts[3].Type);
-			Assert.AreEqual(ScriptType.TableRestoreData, scripts[4].Type);
+			ClassicAssert.AreEqual(5, scripts.Count);
+			ClassicAssert.AreEqual(ScriptType.DropIndex, scripts[0].Type);
+			ClassicAssert.AreEqual(ScriptType.TableSaveData, scripts[1].Type);
+			ClassicAssert.AreEqual(ScriptType.Table, scripts[2].Type);
+			ClassicAssert.AreEqual(ScriptType.Index, scripts[3].Type);
+			ClassicAssert.AreEqual(ScriptType.TableRestoreData, scripts[4].Type);
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			scripts=parser.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, scripts.Count);
+			ClassicAssert.AreEqual(0, scripts.Count);
 		}
 
 		[Test]
@@ -228,19 +229,19 @@ CREATE INDEX IX_a_b ON guest.a(b)");
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(2, scripts.Count);
+			ClassicAssert.AreEqual(2, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
-			Assert.AreEqual(@"DROP INDEX [foo_a] ON [dbo].[foo]
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
+			ClassicAssert.AreEqual(@"DROP INDEX [foo_a] ON [dbo].[foo]
 ", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Index);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Index);
 			//the actual script should be tested in the parser tests
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -260,23 +261,23 @@ CREATE INDEX IX_a_b ON guest.a(b)");
 )
 KEY INDEX PK_Searching ON Fulltext
 WITH CHANGE_TRACKING AUTO");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
-			Assert.AreEqual(1, parser.Database.Tables[0].Indexes.Count);
-			Assert.AreEqual(1, parser.Database.FulltextIndexes.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables[0].Indexes.Count);
+			ClassicAssert.AreEqual(1, parser.Database.FulltextIndexes.Count);
 
 			ScriptSet scripts=parser.Database.CreateDiffScripts(new Database());
 			scripts.Sort();
-			Assert.AreEqual(4, scripts.Count);
-			Assert.AreEqual(ScriptType.Table, scripts[0].Type);
-			Assert.AreEqual(ScriptType.ClusteredIndex, scripts[1].Type);
-			Assert.AreEqual(ScriptType.FulltextCatalog, scripts[2].Type);
-			Assert.AreEqual(ScriptType.FulltextIndex, scripts[3].Type);
+			ClassicAssert.AreEqual(4, scripts.Count);
+			ClassicAssert.AreEqual(ScriptType.Table, scripts[0].Type);
+			ClassicAssert.AreEqual(ScriptType.ClusteredIndex, scripts[1].Type);
+			ClassicAssert.AreEqual(ScriptType.FulltextCatalog, scripts[2].Type);
+			ClassicAssert.AreEqual(ScriptType.FulltextIndex, scripts[3].Type);
 
 			ExecuteScripts(scripts);
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 
             parser = new ScriptParser();
             parser.Parse("CREATE FULLTEXT CATALOG Fulltext AS DEFAULT");
@@ -293,27 +294,27 @@ WITH CHANGE_TRACKING AUTO");
 )
 KEY INDEX PK_Searching ON Fulltext
 WITH CHANGE_TRACKING AUTO");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
-			Assert.AreEqual(1, parser.Database.Tables[0].Indexes.Count);
-			Assert.AreEqual(1, parser.Database.FulltextIndexes.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables[0].Indexes.Count);
+			ClassicAssert.AreEqual(1, parser.Database.FulltextIndexes.Count);
 
 			difference=parser.Database.CreateDiffScripts(database.Database);
 			difference.Sort();
-			Assert.AreEqual(7, difference.Count);
+			ClassicAssert.AreEqual(7, difference.Count);
 
-			Assert.AreEqual(ScriptType.DropFulltextIndex, difference[0].Type);
-			Assert.AreEqual(ScriptType.DropClusteredIndex, difference[1].Type);
-			Assert.AreEqual(ScriptType.TableSaveData, difference[2].Type);
-			Assert.AreEqual(ScriptType.Table, difference[3].Type);
-			Assert.AreEqual(ScriptType.ClusteredIndex, difference[4].Type);
-			Assert.AreEqual(ScriptType.TableRestoreData, difference[5].Type);
-			Assert.AreEqual(ScriptType.FulltextIndex, difference[6].Type);
+			ClassicAssert.AreEqual(ScriptType.DropFulltextIndex, difference[0].Type);
+			ClassicAssert.AreEqual(ScriptType.DropClusteredIndex, difference[1].Type);
+			ClassicAssert.AreEqual(ScriptType.TableSaveData, difference[2].Type);
+			ClassicAssert.AreEqual(ScriptType.Table, difference[3].Type);
+			ClassicAssert.AreEqual(ScriptType.ClusteredIndex, difference[4].Type);
+			ClassicAssert.AreEqual(ScriptType.TableRestoreData, difference[5].Type);
+			ClassicAssert.AreEqual(ScriptType.FulltextIndex, difference[6].Type);
 
 			ExecuteScripts(difference);
 
 			database=ParseDatabase();
 			difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -335,23 +336,23 @@ WITH CHANGE_TRACKING AUTO");
 )
 KEY INDEX PK_Searching ON Fulltext
 WITH CHANGE_TRACKING AUTO");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
-			Assert.AreEqual(1, parser.Database.Tables[0].Indexes.Count);
-			Assert.AreEqual(1, parser.Database.FulltextIndexes.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables[0].Indexes.Count);
+			ClassicAssert.AreEqual(1, parser.Database.FulltextIndexes.Count);
 
 			ScriptSet scripts=parser.Database.CreateDiffScripts(new Database());
 			scripts.Sort();
-			Assert.AreEqual(4, scripts.Count);
-			Assert.AreEqual(ScriptType.Table, scripts[0].Type);
-			Assert.AreEqual(ScriptType.ClusteredIndex, scripts[1].Type);
-			Assert.AreEqual(ScriptType.FulltextCatalog, scripts[2].Type);
-			Assert.AreEqual(ScriptType.FulltextIndex, scripts[3].Type);
+			ClassicAssert.AreEqual(4, scripts.Count);
+			ClassicAssert.AreEqual(ScriptType.Table, scripts[0].Type);
+			ClassicAssert.AreEqual(ScriptType.ClusteredIndex, scripts[1].Type);
+			ClassicAssert.AreEqual(ScriptType.FulltextCatalog, scripts[2].Type);
+			ClassicAssert.AreEqual(ScriptType.FulltextIndex, scripts[3].Type);
 
 			ExecuteScripts(scripts);
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 
 			parser=new ScriptParser();
 			parser.Parse(@"CREATE TABLE Searching
@@ -368,13 +369,13 @@ WITH CHANGE_TRACKING AUTO");
 )
 KEY INDEX PK_Searching ON Fulltext
 WITH CHANGE_TRACKING AUTO");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
-			Assert.AreEqual(1, parser.Database.Tables[0].Indexes.Count);
-			Assert.AreEqual(1, parser.Database.FulltextIndexes.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables[0].Indexes.Count);
+			ClassicAssert.AreEqual(1, parser.Database.FulltextIndexes.Count);
 
 			difference=parser.Database.CreateDiffScripts(database.Database);
 			difference.Sort();
-			Assert.AreEqual(0, difference.Count);
+			ClassicAssert.AreEqual(0, difference.Count);
 		}
 
 		[Test]
@@ -400,26 +401,26 @@ FROM dbo.Searching");
 )
 KEY INDEX IX_SearchView ON Fulltext
 WITH CHANGE_TRACKING AUTO");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
-			Assert.AreEqual(1, parser.Database.FulltextIndexes.Count);
-			Assert.AreEqual(1, parser.Database.Views.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, parser.Database.FulltextIndexes.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Views.Count);
 
 			ScriptSet scripts=parser.Database.CreateDiffScripts(new Database());
 			scripts.Sort();
-			Assert.AreEqual(6, scripts.Count);
+			ClassicAssert.AreEqual(6, scripts.Count);
 
-			Assert.AreEqual(ScriptType.Table, scripts[0].Type);
-			Assert.AreEqual(ScriptType.View, scripts[1].Type);
-			Assert.AreEqual(ScriptType.PrimaryKey, scripts[2].Type);
-			Assert.AreEqual(ScriptType.ClusteredIndex, scripts[3].Type);
-			Assert.AreEqual(ScriptType.FulltextCatalog, scripts[4].Type);
-			Assert.AreEqual(ScriptType.FulltextIndex, scripts[5].Type);
+			ClassicAssert.AreEqual(ScriptType.Table, scripts[0].Type);
+			ClassicAssert.AreEqual(ScriptType.View, scripts[1].Type);
+			ClassicAssert.AreEqual(ScriptType.PrimaryKey, scripts[2].Type);
+			ClassicAssert.AreEqual(ScriptType.ClusteredIndex, scripts[3].Type);
+			ClassicAssert.AreEqual(ScriptType.FulltextCatalog, scripts[4].Type);
+			ClassicAssert.AreEqual(ScriptType.FulltextIndex, scripts[5].Type);
 
 			ExecuteScripts(scripts);
 
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 
 			parser=new ScriptParser();
 			parser.Parse(@"CREATE TABLE Searching
@@ -441,30 +442,30 @@ FROM dbo.Searching");
 )
 KEY INDEX IX_SearchView ON Fulltext
 WITH CHANGE_TRACKING AUTO");
-			Assert.AreEqual(1, parser.Database.Tables.Count);
-			Assert.AreEqual(1, parser.Database.FulltextIndexes.Count);
-			Assert.AreEqual(1, parser.Database.Views.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
+			ClassicAssert.AreEqual(1, parser.Database.FulltextIndexes.Count);
+			ClassicAssert.AreEqual(1, parser.Database.Views.Count);
 
 			difference=parser.Database.CreateDiffScripts(database.Database);
 			difference.Sort();
-			Assert.AreEqual(11, difference.Count);
+			ClassicAssert.AreEqual(11, difference.Count);
 
-			Assert.AreEqual(ScriptType.DropFulltextIndex, difference[0].Type);
-			Assert.AreEqual(ScriptType.DropPrimaryKey, difference[1].Type);
-			Assert.AreEqual(ScriptType.DropClusteredIndex, difference[2].Type);
-			Assert.AreEqual(ScriptType.DropView, difference[3].Type);
-			Assert.AreEqual(ScriptType.TableSaveData, difference[4].Type);
-			Assert.AreEqual(ScriptType.Table, difference[5].Type);
-			Assert.AreEqual(ScriptType.View, difference[6].Type);
-			Assert.AreEqual(ScriptType.PrimaryKey, difference[7].Type);
-			Assert.AreEqual(ScriptType.ClusteredIndex, difference[8].Type);
-			Assert.AreEqual(ScriptType.TableRestoreData, difference[9].Type);
-			Assert.AreEqual(ScriptType.FulltextIndex, difference[10].Type);
+			ClassicAssert.AreEqual(ScriptType.DropFulltextIndex, difference[0].Type);
+			ClassicAssert.AreEqual(ScriptType.DropPrimaryKey, difference[1].Type);
+			ClassicAssert.AreEqual(ScriptType.DropClusteredIndex, difference[2].Type);
+			ClassicAssert.AreEqual(ScriptType.DropView, difference[3].Type);
+			ClassicAssert.AreEqual(ScriptType.TableSaveData, difference[4].Type);
+			ClassicAssert.AreEqual(ScriptType.Table, difference[5].Type);
+			ClassicAssert.AreEqual(ScriptType.View, difference[6].Type);
+			ClassicAssert.AreEqual(ScriptType.PrimaryKey, difference[7].Type);
+			ClassicAssert.AreEqual(ScriptType.ClusteredIndex, difference[8].Type);
+			ClassicAssert.AreEqual(ScriptType.TableRestoreData, difference[9].Type);
+			ClassicAssert.AreEqual(ScriptType.FulltextIndex, difference[10].Type);
 
 			ExecuteScripts(difference);
 			database=ParseDatabase();
 			difference=parser.Database.CreateDiffScripts(database.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -474,8 +475,8 @@ WITH CHANGE_TRACKING AUTO");
 			Index b=new Index("b", "foo", false, false);
 
 			Difference difference=a.GetDifferences(b, true);
-			Assert.IsNotNull(difference);
-			Assert.AreEqual(1, difference.Messages.Count);
+			ClassicAssert.IsNotNull(difference);
+			ClassicAssert.AreEqual(1, difference.Messages.Count);
 		}
 
 		[Test]
@@ -496,22 +497,22 @@ WITH CHANGE_TRACKING AUTO");
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(3, scripts.Count);
+			ClassicAssert.AreEqual(3, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
 			//the actual script should be tested in the parser tests
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Table);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Table);
 			//the actual script should be tested in the parser tests
 
-			Assert.AreEqual(scripts[2].Type, ScriptType.Index);
+			ClassicAssert.AreEqual(scripts[2].Type, ScriptType.Index);
 			//the actual script should be tested in the parser tests
 
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
 		[Test]
@@ -526,10 +527,10 @@ WITH CHANGE_TRACKING AUTO");
 			ScriptParser endingDatabase=new ScriptParser();
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(2, scripts.Count);
+			ClassicAssert.AreEqual(2, scripts.Count);
 
-            Assert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
-            Assert.AreEqual(scripts[1].Type, ScriptType.DropTable);
+            ClassicAssert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
+            ClassicAssert.AreEqual(scripts[1].Type, ScriptType.DropTable);
 		}
 
 		[Test]
@@ -548,19 +549,19 @@ WITH CHANGE_TRACKING AUTO");
 
 			ScriptSet scripts=endingDatabase.Database.CreateDiffScripts(startingDatabase.Database);
 			scripts.Sort();
-			Assert.AreEqual(2, scripts.Count);
+			ClassicAssert.AreEqual(2, scripts.Count);
 
-			Assert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
-			Assert.AreEqual(@"DROP INDEX [foo_a] ON [dbo].[foo]
+			ClassicAssert.AreEqual(scripts[0].Type, ScriptType.DropIndex);
+			ClassicAssert.AreEqual(@"DROP INDEX [foo_a] ON [dbo].[foo]
 ", scripts[0].Text);
 
-			Assert.AreEqual(scripts[1].Type, ScriptType.Index);
+			ClassicAssert.AreEqual(scripts[1].Type, ScriptType.Index);
 			//the actual script should be tested in the parser tests
 			ExecuteScripts(scripts);
 
 			currentDatabase=ParseDatabase();
 			ScriptSet difference=endingDatabase.Database.CreateDiffScripts(currentDatabase.Database);
-			Assert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 	}
 }
