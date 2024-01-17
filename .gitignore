@@ -1,10 +1,14 @@
 /.vs
+/DiffMatchPatch/.vs
 /DiffMatchPatch/bin
 /DiffMatchPatch/obj
+/SQLUpdater/.vs
 /SQLUpdater/bin
 /SQLUpdater/obj
+/SQLUpdater.Lib/.vs
 /SQLUpdater.Lib/bin
 /SQLUpdater.Lib/obj
+/SQLUpdater.UnitTests/.vs
 /SQLUpdater.UnitTests/bin
 /SQLUpdater.UnitTests/obj
 /SQLUpdater.UnitTests/SQLUpdater.UnitTests.VisualState.xml
