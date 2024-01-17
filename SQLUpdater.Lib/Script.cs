@@ -311,8 +311,8 @@ namespace SQLUpdater.Lib
 				return 1;
 			}
 
-			//default to equal
-			return 0;
+			//default to name order
+			return Name.FullName.CompareTo(other.Name.FullName);
 		}
 
 		/// <summary>

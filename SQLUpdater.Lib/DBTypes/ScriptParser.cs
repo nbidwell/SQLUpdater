@@ -62,6 +62,15 @@ namespace SQLUpdater.Lib.DBTypes
             }
 		}
 
+		private string CleanQuotes(string val)
+		{
+			while (val.StartsWith("'") && val.EndsWith("'"))
+			{
+				val = val.Substring(1, val.Length - 2);
+			}
+			return val;
+		}
+
 		/// <summary>
 		/// Ensure that the scripted database is consistent.
 		/// </summary>
@@ -221,6 +230,10 @@ namespace SQLUpdater.Lib.DBTypes
 									ParseAlterTableCheckStatement(tokenEnumerator, tableNameToken);
 									break;
 
+								case "enable":
+									ParseAlterTableEnableStatement(tokenEnumerator, tableNameToken);
+									break;
+
 								case "nocheck":
 									ParseAlterTableNocheckStatement(tokenEnumerator, tableNameToken);
 									break;
@@ -337,14 +350,44 @@ namespace SQLUpdater.Lib.DBTypes
 				default:
 					throw new ApplicationException("Unexpected token: "+tokenEnumerator.Current);
 			}
-		}
+        }
 
-		/// <summary>
-		/// Parses the fake set clause of an alter table statement.
-		/// </summary>
-		/// <param name="tokenEnumerator">The token enumerator.</param>
-		/// <param name="tableNameToken">The table name token.</param>
-		private void ParseAlterTableSetStatement(TokenEnumerator tokenEnumerator, Token tableNameToken)
+        /// <summary>
+        /// Parses the enable clause of an alter table statement.
+        /// </summary>
+        /// <param name="tokenEnumerator">The token enumerator.</param>
+        /// <param name="tableNameToken">The table name token.</param>
+        private void ParseAlterTableEnableStatement(TokenEnumerator tokenEnumerator, Token tableNameToken)
+        {
+            tokenEnumerator.MoveNext();
+            if (tokenEnumerator.Current.Value.ToLower() != "trigger")
+            {
+                throw new ApplicationException("Unknown token: " + tokenEnumerator.Current.Value);
+            }
+
+            tokenEnumerator.MoveNext();
+            Name tableName = tableNameToken.FlattenTree();
+			Name triggerName = tokenEnumerator.Current.FlattenTree();
+
+			//Not handling disabled triggers right now, so just verify that it exists
+			Trigger trigger = Database.Triggers[triggerName];
+			if (trigger == null)
+			{
+				Name qualifiedName = new Name(tableName.Database, tableName.Owner, triggerName.Object);
+                trigger = Database.Triggers[qualifiedName];
+            }
+			if (trigger == null)
+            {
+                throw new Exception("Trigger " + triggerName + " not found");
+            }
+        }
+
+        /// <summary>
+        /// Parses the fake set clause of an alter table statement.
+        /// </summary>
+        /// <param name="tokenEnumerator">The token enumerator.</param>
+        /// <param name="tableNameToken">The table name token.</param>
+        private void ParseAlterTableSetStatement(TokenEnumerator tokenEnumerator, Token tableNameToken)
 		{
 			tokenEnumerator.MoveNext();
 			switch(tokenEnumerator.Current.Value.ToLower())
@@ -685,7 +728,7 @@ namespace SQLUpdater.Lib.DBTypes
 				{
 					columnEnumerator.MoveNext();
 					columnEnumerator.MoveNext();
-					creating.Language=columnEnumerator.Current.Value;
+					creating.Language=CleanQuotes(columnEnumerator.Current.Value);
 				}
 
 				if(columnEnumerator.Next!=null && columnEnumerator.Next.Type==TokenType.Separator)
