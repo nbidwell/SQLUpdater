@@ -291,9 +291,76 @@ namespace SQLUpdater.Lib.DBTypes
 					break;
 			}
 			return new Script(output.ToString(), Name, scriptType);
-		}
+        }
 
-		private Difference GetColumnDifferences(Constraint otherConstraint, bool allDifferences, Difference difference)
+        /// <summary>
+        /// Generates a create script.
+        /// </summary>
+        /// <returns></returns>
+        public string GenerateInlineCreateScript()
+        {
+            StringBuilder output = new StringBuilder();
+
+            switch (Type)
+            {
+                case ConstraintType.Check:
+                    output.Append("CHECK " + Check);
+                    break;
+
+                case ConstraintType.ForeignKey:
+                    output.Append("FOREIGN KEY(");
+                    foreach (SmallName column in Columns)
+                    {
+                        output.Append("\r\n\t" + column + ",");
+                    }
+                    output.Remove(output.Length - 1, 1);
+                    output.Append("\r\n)\r\nREFERENCES " + ReferencedTable + "(");
+                    foreach (SmallName column in ReferencedColumns)
+                    {
+                        output.Append("\r\n\t" + column + ",");
+                    }
+                    output.Remove(output.Length - 1, 1);
+                    output.Append("\r\n)");
+
+                    break;
+
+                case ConstraintType.PrimaryKey:
+                    output.Append("PRIMARY KEY");
+                    if (!Clustered)
+                    {
+                        output.Append(" NONCLUSTERED");
+                    }
+                    output.Append("(");
+                    foreach (SmallName column in Columns)
+                    {
+                        output.Append("\r\n\t" + column + ",");
+                    }
+                    output.Remove(output.Length - 1, 1);
+                    break;
+
+                case ConstraintType.Unique:
+                    output.Append("\tUNIQUE");
+                    if (Clustered)
+                    {
+                        output.Append(" CLUSTERED");
+                    }
+                    output.Append("(");
+                    foreach (SmallName column in Columns)
+                    {
+                        output.Append("\r\n\t\t" + column + ",");
+                    }
+                    output.Remove(output.Length - 1, 1);
+                    output.Append("\r\n\t)");
+                    break;
+
+                default:
+                    throw new Exception("Trying to generate unknown type of constraint");
+            }
+
+            return output.ToString();
+        }
+
+        private Difference GetColumnDifferences(Constraint otherConstraint, bool allDifferences, Difference difference)
 		{
 			if(Columns.Count!=otherConstraint.Columns.Count)
 			{

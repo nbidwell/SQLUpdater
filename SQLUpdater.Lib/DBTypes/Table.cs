@@ -33,6 +33,12 @@ namespace SQLUpdater.Lib.DBTypes
 		public HashArray<Column> Columns { get; private set; }
 
 		/// <summary>
+		/// Gets or sets the inline costraints.
+		/// </summary>
+		/// <value>The constraints.</value>
+		public HashArray<Constraint> Constraints { get; private set; }
+
+		/// <summary>
 		/// Gets or sets the scripted data.
 		/// </summary>
 		/// <value>The scripted data.</value>
@@ -66,6 +72,7 @@ namespace SQLUpdater.Lib.DBTypes
 		public Table(string name) : base(name)
 		{
 			Columns=new HashArray<Column>();
+			Constraints=new HashArray<Constraint>();
 			Data=new TableData(((Name)name).Unescaped+"___Data");
 			Indexes=new HashArray<Index>();
 		}
@@ -82,7 +89,16 @@ namespace SQLUpdater.Lib.DBTypes
 			foreach(Column column in Columns)
 			{
 				output.Append("\t"+column.GenerateCreateScript().Text);
-				if(column!=Columns[Columns.Count-1])
+				if(column!=Columns[Columns.Count-1] || Constraints.Count>0)
+				{
+					output.Append(",");
+				}
+				output.Append("\r\n");
+			}
+			foreach (Constraint constraint in Constraints)
+			{
+				output.Append(constraint.GenerateInlineCreateScript());
+				if (constraint != Constraints[Constraints.Count - 1])
 				{
 					output.Append(",");
 				}

@@ -653,7 +653,15 @@ namespace SQLUpdater.Lib.DBTypes
 			}
 
 			//don't add until name is set in stone
-			Database.Constraints.Add(adding);
+			var constrainedTable = Database.Tables[adding.ConstrainedTable];
+			if (constrainedTable != null && constrainedTable.IsType)
+			{
+				constrainedTable.Constraints.Add(adding);
+			}
+			else
+			{
+				Database.Constraints.Add(adding);
+			}
 
             return adding;
 		}
@@ -994,7 +1002,8 @@ namespace SQLUpdater.Lib.DBTypes
 					continue;
 				}
 				if(columnEnumerator.Current.Value.ToLower()=="primary" 
-					|| columnEnumerator.Current.Value.ToLower()=="foreign")
+					|| columnEnumerator.Current.Value.ToLower()=="foreign"
+					|| columnEnumerator.Current.Value.ToLower()=="unique")
 				{
 					columnEnumerator.MovePrevious();
 					ParseConstraintStatement(columnEnumerator, null, tableNameToken, null, null);
@@ -1731,6 +1740,12 @@ namespace SQLUpdater.Lib.DBTypes
             {
                 adding.Name.Object = adding.Name.Object.Unescaped.Replace("PK_", "IX_");
             }
+
+			//HACK - it would be better to know we're parsing something that needs to remain inline
+			if (tokenEnumerator.Current.Value.ToLower() == "clustered" || tokenEnumerator.Current.Type==TokenType.GroupBegin)
+			{
+				tokenEnumerator.MovePrevious();
+			}
 
 			//clustering
 			if(tokenEnumerator.Next!=null && tokenEnumerator.Next.Value.ToLower()=="clustered")

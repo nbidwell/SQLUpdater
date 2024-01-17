@@ -66,5 +66,30 @@ GO",
             ScriptSet difference = parser.Database.CreateDiffScripts(database.Database);
             ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
         }
+
+        [Test]
+        public void TableUniqueClusterdIndexTest()
+        {
+            ScriptParser parser = new ScriptParser();
+            parser.Parse("CREATE TYPE foo AS TABLE ( a int, UNIQUE CLUSTERED(a) )");
+            ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
+
+            ScriptSet difference = parser.Database.CreateDiffScripts(new Database());
+            ClassicAssert.AreEqual(1, difference.Count);
+            ClassicAssert.AreEqual(@"CREATE TYPE [dbo].[foo] AS TABLE(
+	[a] [int] NULL,
+	UNIQUE CLUSTERED(
+		[a]
+	)
+)
+
+GO",
+                difference[0].Text);
+            ExecuteScripts(difference);
+
+            ScriptParser database = ParseDatabase();
+            difference = parser.Database.CreateDiffScripts(database.Database);
+            ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+        }
     }
 }
