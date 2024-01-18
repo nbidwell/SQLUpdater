@@ -54,7 +54,7 @@ namespace SQLUpdater.Lib
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Unable to connect to database at " + connectionString, ex);
+                throw new ApplicationException("Unable to connect to database at " + connectionString + " ("+ex.InnerException.Message+")", ex);
             }
 			if(database==null)
 			{
