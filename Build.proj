@@ -11,8 +11,8 @@
 
   <Target Name="Install" DependsOnTargets="Build">
     <ItemGroup>
-      <BinaryFiles Include="SQLUpdater\bin\$(Configuration)\*.dll" />
-      <BinaryFiles Include="SQLUpdater\bin\$(Configuration)\*.exe" Exclude="SQLUpdater\bin\$(Configuration)\*.vshost.exe" />
+      <BinaryFiles Include="SQLUpdater\bin\$(Configuration)\**\*.dll" />
+      <BinaryFiles Include="SQLUpdater\bin\$(Configuration)\**\*.exe" Exclude="SQLUpdater\bin\$(Configuration)\*.vshost.exe" />
     </ItemGroup>
 
     <Copy SourceFiles="@(BinaryFiles)" DestinationFolder="$(Destination)" />
