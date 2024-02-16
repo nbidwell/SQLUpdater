@@ -76,11 +76,17 @@ namespace SQLUpdater.Lib.DBTypes
 		/// <value><c>true</c> if nullable; otherwise, <c>false</c>.</value>
 		public bool Nullable { get; set; }
 
-		/// <summary>
-		/// Gets or sets the size of this column.
-		/// </summary>
-		/// <value>The size of this column.</value>
-		public string Size { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether this computed <see cref="Column"/> is persisted.
+        /// </summary>
+        /// <value><c>true</c> if this is a persisted column; otherwise, <c>false</c>.</value>
+        public bool Persisted { get; set; }
+
+        /// <summary>
+        /// Gets or sets the size of this column.
+        /// </summary>
+        /// <value>The size of this column.</value>
+        public string Size { get; set; }
 
 		/// <summary>
 		/// Gets or sets the type of this column.
@@ -125,6 +131,10 @@ namespace SQLUpdater.Lib.DBTypes
 			{
 				output.Append(" AS ");
 				output.Append(As);
+				if (Persisted)
+				{
+					output.Append(" PERSISTED");
+				}
 			}
 			else
 			{

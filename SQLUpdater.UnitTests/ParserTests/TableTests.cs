@@ -69,16 +69,38 @@ GO",
 			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 		}
 
+        [Test]
+        public void ComputedColumnTest()
+        {
+            ScriptParser parser = new ScriptParser();
+            parser.Parse(@"CREATE TABLE a( b int, c AS [b], d AS [b] )");
+
+            Script createScript = parser.Database.Tables[0].GenerateCreateScript();
+            ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[a](
+	[b] [int] NULL,
+	[c] AS [b],
+	[d] AS [b]
+)
+
+GO",
+                createScript.Text);
+            ExecuteScripts(createScript);
+
+            ScriptParser database = ParseDatabase();
+            ScriptSet difference = parser.Database.CreateDiffScripts(database.Database);
+            ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+        }
+
 		[Test]
-		public void ComputedColumnTest()
+		public void ComputedPersistedColumnTest()
 		{
 			ScriptParser parser=new ScriptParser();
-			parser.Parse(@"CREATE TABLE a( b int, c AS [b], d AS [b] )");
+			parser.Parse(@"CREATE TABLE a( b int, c AS [b] PERSISTED, d AS [b] )");
 
 			Script createScript=parser.Database.Tables[0].GenerateCreateScript();
 			ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[a](
 	[b] [int] NULL,
-	[c] AS [b],
+	[c] AS [b] PERSISTED,
 	[d] AS [b]
 )
 
@@ -89,9 +111,9 @@ GO",
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
 			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
-		}
+        }
 
-		[Test]
+        [Test]
 		public void CreateTableTwiceTest()
 		{
 			ScriptParser parser=new ScriptParser();

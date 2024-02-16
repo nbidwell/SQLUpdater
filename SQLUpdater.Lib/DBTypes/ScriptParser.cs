@@ -1036,7 +1036,14 @@ namespace SQLUpdater.Lib.DBTypes
 					}
 					columnEnumerator.MoveNext();
 
-					continue;
+					if (columnEnumerator.Current.Value.ToLower() == "persisted")
+					{
+						column.Persisted = true;
+						columnEnumerator.MoveNext();
+					}
+
+
+                    continue;
 				}
 
 				//get the column's size
