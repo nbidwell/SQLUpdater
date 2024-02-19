@@ -197,7 +197,7 @@ namespace SQLUpdater.Lib.DBTypes
 				if(!allDifferences)
 					return difference;
 			}
-			if(As!=otherColumn.As)
+			if(As!=otherColumn.As && !Tokenizer.Tokenize(As).EquivalentTo(Tokenizer.Tokenize(otherColumn.As)))
 			{
 				difference.AddMessage("Computed column expression", otherColumn.As, As);
 				if(!allDifferences)

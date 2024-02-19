@@ -305,6 +305,7 @@
     <Compile Include="ScriptOrderingTests.cs" />
     <Compile Include="TestLogger.cs" />
     <Compile Include="TokenizerTests.cs" />
+    <Compile Include="TokenSetTests.cs" />
     <Compile Include="UpdateTests\ConstraintTests.cs" />
     <Compile Include="UpdateTests\FunctionTests.cs" />
     <Compile Include="UpdateTests\IndexTests.cs" />

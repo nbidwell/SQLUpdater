@@ -15,8 +15,10 @@
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+using SQLUpdater.Lib.DBTypes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SQLUpdater.Lib
@@ -138,6 +140,81 @@ namespace SQLUpdater.Lib
         public void Clear()
         {
             tokens.Clear();
+        }
+
+        /// <summary>
+        /// A loose test for equality
+        /// </summary>
+        /// <param name="other">Another set</param>
+        /// <returns></returns>
+        public bool EquivalentTo(TokenSet other)
+        {
+            //Handle extra () one one side or the other
+            if (tokens.Count == 1 && tokens.First().Type == TokenType.GroupBegin)
+            {
+                //Need to check equality without the final )
+                TokenSet checking = new TokenSet();
+                foreach (Token token in tokens.First().Children)
+                {
+                    if (token.Type != TokenType.GroupEnd)
+                        checking.Add(token);
+                }
+                if (checking.EquivalentTo(other))
+                    return true;
+            }
+            if (other.tokens.Count == 1 && other.tokens.First().Type == TokenType.GroupBegin)
+            {
+                //Need to check equality without the final )
+                TokenSet checking = new TokenSet();
+                foreach (Token token in other.tokens.First().Children)
+                {
+                    if (token.Type != TokenType.GroupEnd)
+                        checking.Add(token);
+                }
+                if (checking.EquivalentTo(this))
+                    return true;
+            }
+
+            if (tokens.Count != other.tokens.Count)
+                return false;
+
+            var these=tokens.GetEnumerator();
+            var those=other.tokens.GetEnumerator();
+            while (these.MoveNext() && those.MoveNext())
+            {
+                if (these.Current.Type == TokenType.GroupBegin && those.Current.Type != TokenType.GroupBegin)
+                {
+                    TokenSet thoseCurrent = new TokenSet();
+                    thoseCurrent.Add(those.Current);
+                    thoseCurrent.Add(new Token(")", TokenType.GroupEnd, those.Current.StartIndex));
+                    if (!these.Current.Children.EquivalentTo(thoseCurrent))
+                        return false;
+                }
+                else if (those.Current.Type == TokenType.GroupBegin)
+                {
+                    TokenSet theseCurrent = new TokenSet();
+                    theseCurrent.Add(these.Current);
+                    theseCurrent.Add(new Token(")", TokenType.GroupEnd, these.Current.StartIndex));
+                    if (!those.Current.Children.EquivalentTo(theseCurrent))
+                        return false;
+                }
+                else if (these.Current.Children.Any())
+                {
+                    if (
+                        (Name)these.Current.Value != (Name)those.Current.Value
+                        || ! these.Current.Children.EquivalentTo(those.Current.Children)
+                        )
+                    {
+                        return false;
+                    }
+                }
+                else if ((SmallName)these.Current.Value != (SmallName)those.Current.Value)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
 		/// <summary>

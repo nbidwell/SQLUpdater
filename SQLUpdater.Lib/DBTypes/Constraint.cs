@@ -431,7 +431,7 @@ namespace SQLUpdater.Lib.DBTypes
 				if(!allDifferences)
 					return difference;
 			}
-			if(Check!=otherConstraint.Check)
+			if(Check!=otherConstraint.Check && !Tokenizer.Tokenize(Check).EquivalentTo(Tokenizer.Tokenize(otherConstraint.Check)))
 			{
 				difference.AddMessage("Check", otherConstraint.Check, Check);
 				if(!allDifferences)
