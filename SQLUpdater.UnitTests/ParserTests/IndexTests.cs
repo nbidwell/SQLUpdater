@@ -546,9 +546,37 @@ INCLUDE(
 			ClassicAssert.AreEqual(1, database.Database.Tables[1].Indexes.Count);
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
 			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
-		}
+        }
 
-		[Test]
+        [Test]
+        public void PartitionedTest()
+        {
+            ScriptParser parser = new ScriptParser();
+            parser.Parse("CREATE TABLE foo(a int)");
+			//Could include the partitioning scheme, but pass on that for now
+            parser.Parse("CREATE INDEX foo_a ON dbo.foo(a) ON psBar(a)");
+            ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
+            ClassicAssert.AreEqual(1, parser.Database.Tables[0].Indexes.Count);
+
+            ExecuteScripts(parser.Database.Tables[0].GenerateCreateScript());
+            Script createScript = parser.Database.Tables[0].Indexes[0].GenerateCreateScript();
+            ClassicAssert.AreEqual(@"CREATE INDEX [foo_a]
+ON [dbo].[foo](
+	[a] ASC
+)
+ON psBar ( a )
+",
+                createScript.Text);
+			/* Since we don't parse up partition schemes right now
+            ExecuteScripts(createScript);
+
+            ScriptParser database = ParseDatabase();
+            ScriptSet difference = parser.Database.CreateDiffScripts(database.Database);
+            ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+			*/
+        }
+
+        [Test]
 		public void UniqueClusteredTest()
 		{
 			ScriptParser parser=new ScriptParser();

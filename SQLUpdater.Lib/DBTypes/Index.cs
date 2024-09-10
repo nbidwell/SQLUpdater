@@ -160,8 +160,11 @@ namespace SQLUpdater.Lib.DBTypes
 			}
 			if(FileGroup!=null && ""!=FileGroup.Unescaped)
 			{
-				output.Append("ON "+FileGroup);
-				output.Append("\r\n");
+				if(FileGroup.Unescaped.Contains("("))
+					output.Append("ON "+FileGroup.Unescaped);  //HACK
+				else
+					output.Append("ON "+FileGroup);
+                output.Append("\r\n");
 			}
             if (!Enabled)
             {
