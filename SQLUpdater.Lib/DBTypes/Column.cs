@@ -197,7 +197,7 @@ namespace SQLUpdater.Lib.DBTypes
 				if(!allDifferences)
 					return difference;
 			}
-			if(As!=otherColumn.As && !Tokenizer.Tokenize(As).EquivalentTo(Tokenizer.Tokenize(otherColumn.As)))
+			if(As!=otherColumn.As && (As==null || otherColumn.As==null || !Tokenizer.Tokenize(As).EquivalentTo(Tokenizer.Tokenize(otherColumn.As))))
 			{
 				difference.AddMessage("Computed column expression", otherColumn.As, As);
 				if(!allDifferences)
@@ -251,7 +251,11 @@ namespace SQLUpdater.Lib.DBTypes
 				if(!allDifferences)
 					return difference;
 			}
-			if(Type!=otherColumn.Type)
+			var thisType = Type;
+			var otherType = otherColumn.Type;
+			if (thisType == "timestamp") thisType = "rowversion";
+			if (otherType == "timestamp") otherType = "rowversion";
+            if (thisType!=otherType)
 			{
 				difference.AddMessage("Type", otherColumn.Type, Type);
 				if(!allDifferences)

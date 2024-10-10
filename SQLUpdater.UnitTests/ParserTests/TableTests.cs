@@ -326,9 +326,39 @@ PRIMARY KEY(
 			ScriptParser database=ParseDatabase();
 			ScriptSet difference=parser.Database.CreateDiffScripts(database.Database);
 			ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
-		}
+        }
 
-		[Test]
+        [Test]
+        public void RowversionColumnTest()
+        {
+            ScriptParser parser = new ScriptParser();
+            parser.Parse("CREATE TABLE foo( a int, b rowversion)");
+            ClassicAssert.AreEqual(1, parser.Database.Tables.Count);
+
+            Script createScript = parser.Database.Tables[0].GenerateCreateScript();
+            ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[foo](
+	[a] [int] NULL,
+	[b] [rowversion] NULL
+)
+
+GO",
+                createScript.Text);
+            ExecuteScripts(createScript);
+
+            ScriptParser database = ParseDatabase();
+            Script parsedScript = database.Database.Tables[0].GenerateCreateScript();
+            ClassicAssert.AreEqual(@"CREATE TABLE [dbo].[foo](
+	[a] [int] NULL,
+	[b] [timestamp] NULL
+) ON [PRIMARY]
+
+GO",
+                parsedScript.Text);
+            ScriptSet difference = parser.Database.CreateDiffScripts(database.Database);
+            ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
+        }
+
+        [Test]
 		public void SchemaTest()
 		{
 			ScriptParser parser=new ScriptParser();
