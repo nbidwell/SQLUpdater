@@ -935,7 +935,7 @@ namespace SQLUpdater.Lib.DBTypes
 				{
 					tokenEnumerator.MoveNext();  //past "on"
 					tokenEnumerator.MoveNext();  //to the filegroup
-					adding.FileGroup=tokenEnumerator.Current.FlattenTree();
+					adding.FileGroup = tokenEnumerator.Current.FlattenTree().Replace("[", "").Replace("]", "");  //Hack for partitioned tables
 
 					//check the next thing
 					finished=tokenEnumerator.Next==null;

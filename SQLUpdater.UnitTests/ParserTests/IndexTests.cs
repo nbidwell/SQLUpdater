@@ -567,13 +567,20 @@ ON [dbo].[foo](
 ON psBar ( a )
 ",
                 createScript.Text);
-			/* Since we don't parse up partition schemes right now
+            /* Since we don't parse up partition schemes right now
             ExecuteScripts(createScript);
 
             ScriptParser database = ParseDatabase();
             ScriptSet difference = parser.Database.CreateDiffScripts(database.Database);
             ClassicAssert.AreEqual(0, difference.Count, RunOptions.Current.Logger.ToString());
 			*/
+
+			//Fake out a round trip
+            ScriptParser again = new ScriptParser();
+            again.Parse("CREATE TABLE foo(a int)");
+            again.Parse("CREATE INDEX [foo_a] ON [dbo].[foo]([a]) ON [psBar](a)");
+            ScriptSet difference = parser.Database.CreateDiffScripts(again.Database);
+			ClassicAssert.IsTrue(difference.Count == 0);
         }
 
         [Test]
