@@ -2,7 +2,6 @@ using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using SQLUpdater.Lib;
 using SQLUpdater.Lib.DBTypes;
-using System;
 using System.Collections.Generic;
 using System.Text;
 
